@@ -1,0 +1,85 @@
+{% extends "layout_main.html" %}
+{% block content %}
+
+    <div class="row">
+        <div class="col-8 offset-2">
+            <! -- Order Overview -->
+            <div class="row ">
+                <div class="col-12 text-center mt-5 mb-3 h4">
+                    Your order is ready for processing
+                </div>
+
+
+                <div class="row text-center first_color">
+                    <div class="col-3">
+                        Order Number: <br>
+                        {{ order.id }}
+                    </div>
+                    <div class="col-3">
+                        Total: <br>
+                        {{ order.total_cost_usd }}
+                    </div>
+                    <div class="col-3">
+                        Coin Payment: <br>
+                        {% if order.order_payment_type == 1 %}
+                            Bitcoin (BTC)
+                        {% elif order.order_payment_type == 2 %}
+                            Bitcoin Cash (BCH)
+                        {% elif order.order_payment_type == 3 %}
+                            Monero (XMR)
+                        {% else  %}
+                            Bitcoin (BTC)
+                        {% endif %}
+                    </div>
+                </div>
+
+                <! -- Order info -->
+                <div class="row mb-3 first_color">
+                    <div class="col-12">
+                    </div>
+                    <div class="col-12 text-center mt-5 h4 ">
+                        Please send the amount of
+                        {% if order.order_payment_type == 1 %}
+                            <p class="fw-bold">{{ order.total_cost_btc }} BTC</p>
+                        {% elif order.order_payment_type == 2 %}
+                            <p class="fw-bold">{{ order.total_cost_bch }} BCH</p>
+                        {% elif order.order_payment_type == 3 %}
+                            <p class="fw-bold">{{ order.total_cost_xmr }} XMR</p>
+                        {% else  %}
+                            <p class="fw-bold">{{ order.total_cost_btc }} BTC</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+
+
+                <div class="row mb-3 first_color">
+                    <div class="col-12">
+                        Status of Payment
+                    </div>
+                </div>
+
+
+
+                <div class="row mb-3 first_color">
+
+                    <div class="col-12 text-center">
+                        Order Details
+                    </div>
+
+
+                    <div class="col-6">
+                        Item
+                    </div>
+
+                    <div class="col-6">
+                        Cost
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+
+{% endblock %}

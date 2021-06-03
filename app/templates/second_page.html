@@ -1,0 +1,134 @@
+{% extends "layout_main.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-8 offset-2">
+
+            <div class="row ">
+                <div class="col-12 text-center mt-5 h4">
+                    Your Cart
+                </div>
+
+                <div class="col-12 text-center">
+                    {% if get_user_order_items %}
+                        <!-- Submit Post -->
+                        <div class="row first_color mt-3 mb-3">
+                            <div class="col-12  text-center ">
+                                My Cart
+                            </div>
+                            {#                    <div class="col-12  text-center ">Total Cost: {{  }}</div>#}
+                            {#                    <div class="col-12  text-center ">Total Packages: {{  }}</div>#}
+                            <div class="col-12  text-center ">
+                                {% for f in get_user_order_items %}
+                                    <div class="row border m-2">
+                                        <div class="col-3">
+                                                   From {{ f.from_name }} to {{ f.to_name }}
+                                        </div>
+                                        <div class="col-3">
+                                            {{ f.type_of_package }}
+                                        </div>
+                                        <div class="col-3">
+                                            {{ f.cost_usd }}
+                                        </div>
+                                        <div class="col-3">
+                                            <a class="btn btn-warning"
+                                               type="button"
+                                               href="{{ url_for('delete_order', order_id=f.id) }}">
+                                                X
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="col-12 text-center mt-5 h4">
+                    Select Payment Method
+                </div>
+
+
+                <div class="col-12 text-center mb-5">
+                    <form method="post" action="{{ url_for('second_page') }}" >
+                        {{ payment_form.csrf_token }}
+
+                        <div class="row first_color mb-2">
+                            <div class="col-12 text-center h4">Carrier</div>
+                            <div class="col-3">
+                                <label class="form-label">
+                                    <img src="{{ url_for('static', filename='images/usps.png')  }}"
+                                         width="150px" height="100px">
+                                </label>
+                            </div>
+
+
+                            <div class="row mb-2">
+                                <div class="col-1 pt-3">
+                                    <input type="radio" name="whatcoin" value="a" id="q1a" >
+
+                                </div>
+                                <div class="col-3">
+                                    <img src="{{ url_for('static',filename='images/crypto/bch.png')  }}"
+                                         width="80px" height="80px">
+                                </div>
+                                <div class="col-2 pt-3">
+                                    Bitcoin Cash (BCH)
+                                </div>
+                                <div class="col-5 text-left">
+                                    <ul>
+                                        <li>Usually 1-15 mins (Very Fast)</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="row mb-2">
+                                <div class="col-1 pt-3">
+                                    <input type="radio" name="whatcoin" value="b" id="q2b" >
+                                </div>
+                                <div class="col-3">
+                                    <img src="{{ url_for('static',filename='images/crypto/btc.png')  }}"
+                                         width="150px" height="80px">
+                                </div>
+                                <div class="col-2 pt-3">
+                                    Bitcoin (BTC)
+                                </div>
+                                <div class="col-5 text-left">
+                                    <ul>
+                                        <li>Usually 5 mins to 1 hour (slow) </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="row mb-2">
+                                <div class="col-1 pt-3">
+                                    <input type="radio" name="whatcoin" value="c" id="q3c" >
+
+                                </div>
+                                <div class="col-3">
+                                    <img src="{{ url_for('static',filename='images/crypto/xmr.png')  }}"
+                                         width="75px" height="75px">
+                                </div>
+                                <div class="col-2 pt-3">
+                                    Monero (XMR)
+                                </div>
+                                <div class="col-5 ">
+                                    <ul>
+                                        <li>Usually 2-15 mins</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3 pt-2 pb-2">
+                                {{ render_field(payment_form.submit,
+                                value="Pay Now",
+                                class="btn btn-dark btn-block") }}
+                            </div>
+
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

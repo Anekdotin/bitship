@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang='en'>
+{% include 'metadata.html' %}
+{% include 'stylesheets.html' %}
+{% include '_colors.html' %}
+{% from "_formhelper.html" import render_field %}
+
+
+
+<header class="container  mb-5 text-white h5" >
+    <div class="row ">
+        <div class="col-3">
+            <a href="{{ url_for('index') }}">
+                SHIPBIT
+            </a>
+        </div>
+        <div class="col-3">
+            <a href="{{ url_for('tracking') }}">Tracking</a>
+        </div>
+        <div class="col-3">
+            <a href="{{ url_for('view_cart') }}">
+                Cart
+            </a>
+        </div>
+        <div class="col-3">
+            <a href="{{ url_for('upload_csv') }}">
+                CSV Bulk Orders
+            </a>
+        </div>
+    </div>
+</header>
+
+
+<body class="container">
+
+{% include "flashbar.html" %}
+{% block content %}
+
+{% endblock %}
+
+</body>
+
+<footer class="container mt-5">
+
+    <div class="row">
+        <div class="col-6">
+            <a href="{{ url_for('faq') }}">
+                Frequently asked questions
+            </a>
+        </div>
+        <div class="col-6">
+            <a href="{{ url_for('international_help') }}">
+                International Shipping Help
+            </a>
+        </div>
+        <div class="col-6">
+            <a href="{{ url_for('usa_help') }}">
+                US Shipping Help
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12"></div>
+    </div>
+
+
+</footer>
+</html>
