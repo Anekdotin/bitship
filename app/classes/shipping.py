@@ -30,7 +30,13 @@ class OrderItem(db.Model):
     __bind_key__ = 'shipbit'
     __table_args__ = {"schema": "public"}
     id = db.Column(db.Integer, primary_key=True)
+
     user_id = db.Column(db.Integer)
+    # the main order
+    main_shipment_id = db.Column(db.String(140))
+    # the specific item selected from the order
+    object_id_selected_order = db.Column(db.String(140))
+
     order_id = db.Column(db.Integer)
     # Main Order Selection
     service = db.Column(db.Integer)
@@ -39,11 +45,11 @@ class OrderItem(db.Model):
     # size and weight
     type_of_package = db.Column(db.Integer)
     type_of_package_name = db.Column(db.TEXT)
-    length_of_package = db.Column(db.Integer)
-    width_of_package = db.Column(db.Integer)
-    height_of_package = db.Column(db.Integer)
-    weight_one = db.Column(db.Integer)
-    weight_two = db.Column(db.Integer)
+    length_of_package = db.Column(db.DECIMAL(10, 4))
+    width_of_package = db.Column(db.DECIMAL(10, 4))
+    height_of_package = db.Column(db.DECIMAL(10, 4))
+    weight_one = db.Column(db.DECIMAL(10, 4))
+    weight_two = db.Column(db.DECIMAL(10, 4))
 
     # FROM
     from_name = db.Column(db.TEXT)
@@ -75,7 +81,7 @@ class OrderItem(db.Model):
 
 
 class ShippingChoices(db.Model):
-    __tablename__ = 'prices_monero'
+    __tablename__ = 'shipping_choices_selector'
     __bind_key__ = 'shipbit'
     __table_args__ = {"schema": "public"}
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -121,11 +127,11 @@ class ShippingChoices(db.Model):
     # size and weight
     type_of_package = db.Column(db.Integer)
     type_of_package_name = db.Column(db.TEXT)
-    length_of_package = db.Column(db.Integer)
-    width_of_package = db.Column(db.Integer)
-    height_of_package = db.Column(db.Integer)
-    weight_one = db.Column(db.Integer)
-    weight_two = db.Column(db.Integer)
+    length_of_package = db.Column(db.DECIMAL(10, 4))
+    width_of_package = db.Column(db.DECIMAL(10, 4))
+    height_of_package = db.Column(db.DECIMAL(10, 4))
+    weight_one = db.Column(db.DECIMAL(10, 4))
+    weight_two = db.Column(db.DECIMAL(10, 4))
 
     # FROM
     from_name = db.Column(db.TEXT)

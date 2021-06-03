@@ -67,12 +67,21 @@ def index():
                 .order_by(ShippingChoices.estimated_days.asc()) \
                 .all()
 
+            latest_shipping_choice = db.session \
+                .query(ShippingChoices) \
+                .filter(get_current_user.id == ShippingChoices.owner_user_id) \
+                .order_by(ShippingChoices.object_created.desc()) \
+                .first()
+
+
         else:
             get_user_listed_items = None
             get_user_order = None
             user_choices_shipping = None
+            latest_shipping_choice = None
 
         return render_template('index.html',
+                               latest_shipping_choice=latest_shipping_choice,
                                package_basics=package_basics,
                                shipchoiceform=shipchoiceform,
                                cartform=cartform,
@@ -248,29 +257,24 @@ def index():
                     width=location_width,
 
                     from_name=package_basics.from_name_form.data,
-                    from_address_1=package_basics.from_street_address_form.data,
-                    from_address_2=package_basics.from_suitapt_form.data,
+                    from_street_address=package_basics.from_street_address_form.data,
+                    from_apt_suite=package_basics.from_suitapt_form.data,
                     from_city=package_basics.from_city_form.data,
                     from_state=package_basics.from_state_form.data,
                     from_zip=package_basics.from_zip_form.data,
                     from_country=from_country,
-                    from_phone=package_basics.from_phone_form.data,
+                    from_phone_number=package_basics.from_phone_form.data,
 
                     to_name=package_basics.to_name_form.data,
-                    to_address_1=package_basics.to_street_address_form.data,
-                    to_address_2=package_basics.to_suitapt_form.data,
+                    to_street_address=package_basics.to_street_address_form.data,
+                    to_apt_suite=package_basics.to_suitapt_form.data,
                     to_city=package_basics.to_city_form.data,
                     to_state=package_basics.to_state_form.data,
                     to_zip=package_basics.to_zip_form.data,
                     to_country=to_country,
-                    to_phone=package_basics.from_phone_form.data,
+                    to_phone_number=package_basics.from_phone_form.data,
 
-                    mass_unit_type=package_basics.from_name_form.data,
-                    unit_length=package_basics.length.data,
-                    unit_width=package_basics.width.data,
-                    unit_height=package_basics.height.data,
 
-                    unit_weight=package_basics.weight_one.data,
 
                 )
 
@@ -300,6 +304,13 @@ def index():
                 .filter(ShippingChoices.object_id == data) \
                 .first()
 
+            if get_the_shipping_choice.provider == 'USPS':
+                type_of_shipping = 1
+            elif get_the_shipping_choice.provider == 'UPS':
+                type_of_shipping = 2
+            else:
+                type_of_shipping = 3
+
             # add the shipment choice as an item
             # create a new order item
             new_shipment = OrderItem(
@@ -311,7 +322,7 @@ def index():
                 order_id=get_user_order.id,
                 type_of_package=1,
                 type_of_package_name=get_the_shipping_choice.name,
-                service=get_the_shipping_choice.provider,
+                service=type_of_shipping,
                 metric_or_imperial=1,
 
                 length_of_package=get_the_shipping_choice.length,
@@ -320,23 +331,23 @@ def index():
                 weight_one=get_the_shipping_choice.height,
                 weight_two=get_the_shipping_choice.length,
 
-                from_name=get_the_shipping_choice.from_name_form,
-                from_street_address=get_the_shipping_choice.from_street_address_form,
-                from_apt_suite=get_the_shipping_choice.from_suitapt_form,
-                from_city=get_the_shipping_choice.from_city_form,
-                from_state=get_the_shipping_choice.from_state_form,
-                from_zip=get_the_shipping_choice.from_zip_form,
-                from_country=get_the_shipping_choice.from_country_form,
-                from_phone_number=get_the_shipping_choice.from_phone_form,
+                from_name=get_the_shipping_choice.from_name,
+                from_street_address=get_the_shipping_choice.from_street_address,
+                from_apt_suite=get_the_shipping_choice.from_apt_suite,
+                from_city=get_the_shipping_choice.from_city,
+                from_state=get_the_shipping_choice.from_state,
+                from_zip=get_the_shipping_choice.from_zip,
+                from_country=get_the_shipping_choice.from_country,
+                from_phone_number=get_the_shipping_choice.from_phone_number,
 
-                to_name=get_the_shipping_choice.to_name_form,
-                to_street_address=get_the_shipping_choice.to_street_address_form,
-                to_apt_suite=get_the_shipping_choice.to_suitapt_form,
-                to_city=get_the_shipping_choice.to_city_form,
-                to_state=get_the_shipping_choice.to_state_form,
-                to_zip=get_the_shipping_choice.to_zip_form,
-                to_country=get_the_shipping_choice.to_country_form,
-                to_phone_number=get_the_shipping_choice.to_phone_form,
+                to_name=get_the_shipping_choice.to_name,
+                to_street_address=get_the_shipping_choice.to_street_address,
+                to_apt_suite=get_the_shipping_choice.to_apt_suite,
+                to_city=get_the_shipping_choice.to_city,
+                to_state=get_the_shipping_choice.to_state,
+                to_zip=get_the_shipping_choice.to_zip,
+                to_country=get_the_shipping_choice.to_country,
+                to_phone_number=get_the_shipping_choice.to_phone_number,
 
                 cost_usd=get_the_shipping_choice.price_before_profit,
                 cost_btc=0,
@@ -355,6 +366,8 @@ def index():
 
             for choice in get_the_shipping_choices:
                 db.session.delete(choice)
+
+            get_user_order.new_selection = 0
 
             # commit to the database
             db.session.commit()
