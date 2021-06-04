@@ -97,7 +97,9 @@ from .main import main as main_blueprint
 app.register_blueprint(main_blueprint, url_prefix='/main')
 from .main import views
 
-
+from .checkout import checkout as checkout_blueprint
+app.register_blueprint(checkout_blueprint, url_prefix='/checkout')
+from .checkout import views
 # wallets
 # xmr
 from .wallet_xmr import wallet_xmr as wallet_xmr_blueprint

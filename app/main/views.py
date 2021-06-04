@@ -73,7 +73,6 @@ def index():
                 .order_by(ShippingChoices.object_created.desc()) \
                 .first()
 
-
         else:
             get_user_listed_items = None
             get_user_order = None
@@ -94,6 +93,7 @@ def index():
 
         if package_basics.package_submit_form.data:
             print("@!1")
+            print("creating new item")
             # form data basics
             f_country = package_basics.from_country_form.data
             from_country = f_country.ab
@@ -225,71 +225,71 @@ def index():
                 rates_list.append(y)
             # put info into database
             # put into the database the shipping rates
-            for f in rates_list:
-                print(f)
+            if not rates_list:
+                flash('Incorrect address')
+                return redirect(url_for('index'))
+            else:
+                for f in rates_list:
 
-                # calculate a 1$ profit for each label
-                shipment_cost = Decimal(f[3])
+                    # calculate a 1$ profit for each label
+                    shipment_cost = Decimal(f[3])
 
-                profit = Decimal(shipment_cost) + Decimal(1.00)
+                    profit = Decimal(shipment_cost) + Decimal(1.00)
 
-                shipment_selection = ShippingChoices(
-                    object_created=now,
-                    owner_user_id=get_current_user.id,
-                    object_id=f[0],
-                    shipment=f[1],
-                    currency=f[5],
-                    duration_terms=f[6],
-                    estimated_days=f[7],
-                    carrier_account=f[8],
-                    provider=f[9],
-                    name=f[10],
-                    token=f[11],
-                    price_before_profit=str(shipment_cost),
-                    price_after_profit=profit,
-                    currency_local="USD",
-                    distance_unit=1,
+                    shipment_selection = ShippingChoices(
+                        object_created=now,
+                        owner_user_id=get_current_user.id,
+                        object_id=f[0],
+                        shipment=f[1],
+                        currency=f[5],
+                        duration_terms=f[6],
+                        estimated_days=f[7],
+                        carrier_account=f[8],
+                        provider=f[9],
+                        name=f[10],
+                        token=f[11],
+                        price_before_profit=str(shipment_cost),
+                        price_after_profit=profit,
+                        currency_local="USD",
+                        distance_unit=1,
 
-                    height=location_height,
-                    length=location_length,
-                    mass_unit=location_mass_unit,
-                    weight=location_weight,
-                    width=location_width,
+                        height=location_height,
+                        length=location_length,
+                        mass_unit=location_mass_unit,
+                        weight=location_weight,
+                        width=location_width,
 
-                    from_name=package_basics.from_name_form.data,
-                    from_street_address=package_basics.from_street_address_form.data,
-                    from_apt_suite=package_basics.from_suitapt_form.data,
-                    from_city=package_basics.from_city_form.data,
-                    from_state=package_basics.from_state_form.data,
-                    from_zip=package_basics.from_zip_form.data,
-                    from_country=from_country,
-                    from_phone_number=package_basics.from_phone_form.data,
+                        from_name=package_basics.from_name_form.data,
+                        from_street_address=package_basics.from_street_address_form.data,
+                        from_apt_suite=package_basics.from_suitapt_form.data,
+                        from_city=package_basics.from_city_form.data,
+                        from_state=package_basics.from_state_form.data,
+                        from_zip=package_basics.from_zip_form.data,
+                        from_country=from_country,
+                        from_phone_number=package_basics.from_phone_form.data,
 
-                    to_name=package_basics.to_name_form.data,
-                    to_street_address=package_basics.to_street_address_form.data,
-                    to_apt_suite=package_basics.to_suitapt_form.data,
-                    to_city=package_basics.to_city_form.data,
-                    to_state=package_basics.to_state_form.data,
-                    to_zip=package_basics.to_zip_form.data,
-                    to_country=to_country,
-                    to_phone_number=package_basics.from_phone_form.data,
+                        to_name=package_basics.to_name_form.data,
+                        to_street_address=package_basics.to_street_address_form.data,
+                        to_apt_suite=package_basics.to_suitapt_form.data,
+                        to_city=package_basics.to_city_form.data,
+                        to_state=package_basics.to_state_form.data,
+                        to_zip=package_basics.to_zip_form.data,
+                        to_country=to_country,
+                        to_phone_number=package_basics.from_phone_form.data,
+                    )
 
+                    db.session.add(shipment_selection)
 
+                # need to signal to jinja for popup that there is a shipping selection
+                neworder.new_selection = 1
 
-                )
-
-                db.session.add(shipment_selection)
-
-            # need to signal to jinja for popup that there is a shipping selection
-            neworder.new_selection = 1
-
-            db.session.add(neworder)
-            db.session.commit()
-
-            return redirect(url_for('index'))
+                db.session.add(neworder)
+                db.session.commit()
+                flash("Item added select shipping speed")
+                return redirect(url_for('index'))
 
         if shipchoiceform.submit.data:
-
+            print("adding order")
             data = request.form['selectpayment']
 
             print(data)
@@ -310,7 +310,7 @@ def index():
                 type_of_shipping = 2
             else:
                 type_of_shipping = 3
-
+            print("creating an item")
             # add the shipment choice as an item
             # create a new order item
             new_shipment = OrderItem(
@@ -354,6 +354,8 @@ def index():
                 cost_bch=0,
                 cost_xmr=0,
 
+                signature_required=0
+
             )
 
             db.session.add(new_shipment)
@@ -373,10 +375,11 @@ def index():
             db.session.commit()
 
             # return user back to index
+            flash("Added shipping item")
             return redirect(url_for('index'))
 
         else:
-            return redirect(url_for('index'))
+            pass
 
 
 @app.route('/selectpayment', methods=['GET', 'POST'])

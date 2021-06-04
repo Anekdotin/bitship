@@ -2,7 +2,7 @@ from flask_wtf import \
     FlaskForm
 from wtforms import \
     StringField, \
-    SubmitField,\
+    SubmitField, \
     SelectField
 from wtforms.validators import DataRequired, Optional
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
@@ -11,6 +11,29 @@ from app.classes.models import Country
 
 class PackageFormUSPS(FlaskForm):
     # Basic info of package
+
+    shipping_type = SelectField(u'Select Shipping', choices=[
+        ('1', 'Custom Package'),
+        ('2', 'Flat'),
+        ('3', 'Parcel'),
+        ('4', 'Large Parcel'),
+        ('5', 'Irregular Parcel (Roles)'),
+        ('6', 'SoftPack'),
+        ('7', 'letter'),
+        ('8', 'Flat Rate Envolope Letter'),
+        ('9', 'Flat Rate Envolope Legal'),
+        ('10', 'Flat Rate Envolope Padded'),
+        ('11', 'Flat Rate Envolope Small'),
+        ('12', 'Flat Rate Envolope Window'),
+        ('13', 'Flat Rate Envolope Gift Card'),
+        ('14', 'Flat Rate Envolope CardBoard'),
+        ('15', 'Flat Rate Box Small'),
+        ('16', 'Flat Rate Box Medium'),
+        ('17', 'Flat Rate Box Large'),
+        ('18', 'Flat Rate Box Large Board Game'),
+        ('19', 'Regional Rate Box A'),
+        ('20', 'Regional Rate Box B'),
+    ])
 
     metric_or_imperial_form = StringField(validators=[DataRequired()])
     length = StringField(validators=[DataRequired()])
@@ -36,7 +59,7 @@ class PackageFormUSPS(FlaskForm):
 
     from_state_form = StringField(validators=[DataRequired()])
     from_zip_form = StringField(validators=[DataRequired()])
-    from_country_form = QuerySelectField(query_factory=lambda: Country.query.order_by(Country.name.asc()).all(),
+    from_country_form = QuerySelectField(query_factory=lambda: Country.query.order_by(Country.id.asc()).all(),
                                          get_label='name',
                                          validators=[
                                              DataRequired()
@@ -55,7 +78,7 @@ class PackageFormUSPS(FlaskForm):
 
     to_state_form = StringField(validators=[DataRequired()])
 
-    to_country_form = QuerySelectField(query_factory=lambda: Country.query.order_by(Country.name.asc()).all(),
+    to_country_form = QuerySelectField(query_factory=lambda: Country.query.order_by(Country.id.asc()).all(),
                                        get_label='name',
                                        validators=[
                                            DataRequired()
@@ -75,7 +98,6 @@ class PackageFormUSPS(FlaskForm):
             return True
         else:
             return False
-
 
 
 class CartForm(FlaskForm):

@@ -1,41 +1,235 @@
 {% extends "layout_main.html" %}
 {% block content %}
     <div class="row">
-        <div class="col-8 offset-2">
-            <div class="row">
-                <div class="col-12 text-center ">
-                    Accepting Monero and Bitcoin Cash for all orders.
+        <form method="post" action="{{ url_for('index') }}" >
+            <div class="col-8 offset-2">
+                <div class="row">
+                    <div class="col-12 text-center ">
+                        Accepting Monero and Bitcoin Cash for all orders.
+                    </div>
                 </div>
-            </div>
-
-            <div class="row first_color mb-2">
-                <div class="col-12 text-center h4">Carrier</div>
-
-                <div class="col-3">
-                    <img src="{{ url_for('static', filename='images/usps.png')  }}"
-                         width="150px" height="100px">
-                </div>
-
-                <div class="col-3">
-                    <img src="{{ url_for('static', filename='images/ups.png')  }}"
-                         width="150px" height="75px">
-                </div>
-
-                <div class="col-3">
-                    <img src="{{ url_for('static', filename='images/fedex.png')  }}"
-                         width="150px" height="75px">
-                </div>
-
-                <div class="col-3">
-                    <img src="{{ url_for('static', filename='images/canadapost.png')  }}"
-                         width="150px" height="75px">
-                </div>
-
-            </div>
-            {% if get_user_order.new_selection == 1 %}
 
                 <div class="row first_color mb-2">
-                    <div class="col-12 text-center p-3">
+                    <div class="col-12 text-center h4">Carrier</div>
+
+                    <div class="col-3">
+                        <img src="{{ url_for('static', filename='images/usps.png')  }}"
+                             width="150px" height="100px">
+                    </div>
+
+                    <div class="col-3">
+                        <img src="{{ url_for('static', filename='images/ups.png')  }}"
+                             width="150px" height="75px">
+                    </div>
+
+                    <div class="col-3">
+                        <img src="{{ url_for('static', filename='images/fedex.png')  }}"
+                             width="150px" height="75px">
+                    </div>
+
+                    <div class="col-3">
+                        <img src="{{ url_for('static', filename='images/canadapost.png')  }}"
+                             width="150px" height="75px">
+                    </div>
+                </div>
+
+                <div class="row first_color mb-2">
+                    <div class="col-12 text-center h4">Package Type</div>
+                    <div class="col-12  text-center mt-3 mb-4">
+                        {{ render_field(package_basics.shipping_type, class="text-center" ) }}
+                    </div>
+                </div>
+                {% if get_user_order.new_selection == 1 %}
+
+                    <div class="row first_color mb-2">
+                        <div class="col-12 text-center p-3">
+
+                            <div class="row first_color mb-2">
+                                <div class="col-6 text-center p-3">
+                                    <div class="col-12 text-center h5">
+                                        Dimensions
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <label class="form-label">Length</label>
+                                            {{ latest_shipping_choice.length }}
+                                            {{ latest_shipping_choice.length }}
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Width</label>
+                                            {{ latest_shipping_choice.width }}
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label">Height</label>
+                                            {{ latest_shipping_choice.height }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 text-center p-3">
+                                    <div class="col-12 text-center h5">
+                                        Weight
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-2"></div>
+                                        <div class="col-4">
+                                            <label class="form-label">Pounds</label>
+                                            {{ latest_shipping_choice.weight_one }}
+                                        </div>
+                                        <div class="col-4">
+
+                                        </div>
+                                        <div class="col-2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <form class="row first_color p-2 mb-2" >
+
+                                <div class="col-12 text-center h4">
+                                    Information
+                                </div>
+
+                                <div class="col-6">
+
+                                    <div class="col-12 text-center h5">
+                                        From
+                                    </div>
+                                    <div class="col-auto">
+                                        <label class="form-label">Name</label>
+                                        <div class="col-12">
+                                            {{ latest_shipping_choice.from_name }}
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <label class="form-label">Address</label>
+                                        <div class="col-12">
+                                            {{ latest_shipping_choice.from_street_address }}
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <label class="form-label">Suite/Apt</label>
+                                        <div class="col-12">
+                                            {{ latest_shipping_choice.from_apt_suite }}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-7">
+                                        <label class="form-label">City</label>
+                                        <div class="col-12">
+                                            {{ latest_shipping_choice.from_city }}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <label class="form-label">State/Province</label>
+                                            <div class="col-12">
+                                                {{ latest_shipping_choice.from_state }}
+                                            </div>
+                                        </div>
+
+                                        <div class="col-5">
+                                            <label class="form-label">Zip Code</label>
+                                            <div class="col-12">
+                                                {{ latest_shipping_choice.from_zip }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <label class="form-label">Country</label>
+                                        <div class="col-12">
+                                            {{ latest_shipping_choice.from_country }}
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <label class="form-label">Phone Number (Optional)</label>
+                                        <div class="col-12">
+                                            {{ latest_shipping_choice.from_phone_number }}
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-6">
+                                    <div class="col-12 text-center h5">
+                                        To
+                                    </div>
+                                    <div class="col-auto">
+                                        <label class="form-label">Name</label>
+                                        <div class="col-12">
+                                            {{ latest_shipping_choice.to_name }}
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <label class="form-label">Street</label>
+                                        <div class="col-12">
+                                            {{ latest_shipping_choice.to_street_address }}
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <label class="form-label">Suite/Apt</label>
+                                        <div class="col-12">
+                                            {{ latest_shipping_choice.to_apt_suite }}
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <label class="form-label">City</label>
+                                        <div class="col-12">
+                                            {{ latest_shipping_choice.to_city }}
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <label class="form-label">State/Province</label>
+                                            <div class="col-12">
+                                                {{ latest_shipping_choice.to_state }}
+                                            </div>
+                                        </div>
+                                        <div class="col-5">
+                                            <label class="form-label">Zip Code</label>
+                                            <div class="col-12">
+                                                {{ user_choices_shipping.to_zip }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-auto">
+                                        <label class="form-label">Country</label>
+                                        <div class="col-12">
+                                            {{ latest_shipping_choice.to_country }}
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <label class="form-label">Phone Number (Optional)</label>
+                                        <div class="col-12">
+                                            {{ latest_shipping_choice.to_phone_number }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-6 offset-3 mt-3 mb-3 ">
+                                    <label class="form-label">Signature Required</label>
+                                    <div class="col-12">
+                                        {% if latest_shipping_choice.signature_required == 1 %}
+                                            Signature Required
+                                        {% else %}
+                                            No Signature
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                    </div>
+
+
+
+                {% else %}
+
+                    <form method="post"
+                          action="{{ url_for('index') }}" >
+                        {{ package_basics.csrf_token }}
 
                         <div class="row first_color mb-2">
                             <div class="col-6 text-center p-3">
@@ -45,15 +239,15 @@
                                 <div class="row">
                                     <div class="col-4">
                                         <label class="form-label">Length</label>
-                                        {{ latest_shipping_choice.length }}
+                                        {{ render_field(package_basics.length, class="form-control form-control-sm" ) }}
                                     </div>
                                     <div class="col-4">
                                         <label class="form-label">Width</label>
-                                        {{ latest_shipping_choice.width }}
+                                        {{ render_field(package_basics.width, class="form-control form-control-sm" ) }}
                                     </div>
                                     <div class="col-4">
                                         <label class="form-label">Height</label>
-                                        {{ latest_shipping_choice.height }}
+                                        {{ render_field(package_basics.height, class="form-control form-control-sm" ) }}
                                     </div>
                                 </div>
                             </div>
@@ -65,10 +259,11 @@
                                     <div class="col-2"></div>
                                     <div class="col-4">
                                         <label class="form-label">Pounds</label>
-                                        {{ latest_shipping_choice.weight_one }}
+                                        {{ render_field(package_basics.weight_one, class="form-control form-control-sm" ) }}
                                     </div>
                                     <div class="col-4">
-
+                                        <label class="form-label">Ounces</label>
+                                        {{ render_field(package_basics.weight_two, class="form-control form-control-sm" ) }}
                                     </div>
                                     <div class="col-2"></div>
                                 </div>
@@ -88,53 +283,53 @@
                                 <div class="col-auto">
                                     <label class="form-label">Name</label>
                                     <div class="col-12">
-                                        {{ latest_shipping_choice.from_name }}
+                                        {{ render_field(package_basics.from_name_form, class="form-control form-control-sm" ) }}
                                     </div>
                                 </div>
                                 <div class="col-auto">
                                     <label class="form-label">Address</label>
                                     <div class="col-12">
-                                        {{ latest_shipping_choice.from_street_address }}
+                                        {{ render_field(package_basics.from_street_address_form, class="form-control form-control-sm" ) }}
                                     </div>
                                 </div>
                                 <div class="col-auto">
                                     <label class="form-label">Suite/Apt</label>
                                     <div class="col-12">
-                                        {{ latest_shipping_choice.from_apt_suite }}
+                                        {{ render_field(package_basics.from_suitapt_form, class="form-control form-control-sm" ) }}
                                     </div>
                                 </div>
 
                                 <div class="col-7">
                                     <label class="form-label">City</label>
                                     <div class="col-12">
-                                        {{ latest_shipping_choice.from_city }}
+                                        {{ render_field(package_basics.from_city_form, class="form-control form-control-sm" ) }}
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-7">
                                         <label class="form-label">State/Province</label>
                                         <div class="col-12">
-                                            {{ latest_shipping_choice.from_state }}
+                                            {{ render_field(package_basics.from_state_form, class="form-control form-control-sm" ) }}
                                         </div>
                                     </div>
 
                                     <div class="col-5">
                                         <label class="form-label">Zip Code</label>
                                         <div class="col-12">
-                                            {{ latest_shipping_choice.from_zip }}
+                                            {{ render_field(package_basics.from_zip_form, class="form-control form-control-sm" ) }}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-auto">
                                     <label class="form-label">Country</label>
                                     <div class="col-12">
-                                        {{ latest_shipping_choice.from_country }}
+                                        {{ render_field(package_basics.from_country_form, class="form-control form-control-sm" ) }}
                                     </div>
                                 </div>
                                 <div class="col-auto">
                                     <label class="form-label">Phone Number (Optional)</label>
                                     <div class="col-12">
-                                        {{ latest_shipping_choice.from_phone_number }}
+                                        {{ render_field(package_basics.from_phone_form, class="form-control form-control-sm" ) }}
                                     </div>
                                 </div>
 
@@ -146,25 +341,25 @@
                                 <div class="col-auto">
                                     <label class="form-label">Name</label>
                                     <div class="col-12">
-                                        {{ latest_shipping_choice.to_name }}
+                                        {{ render_field(package_basics.to_name_form, class="form-control form-control-sm" ) }}
                                     </div>
                                 </div>
                                 <div class="col-auto">
                                     <label class="form-label">Street</label>
                                     <div class="col-12">
-                                        {{ latest_shipping_choice.to_street_address }}
+                                        {{ render_field(package_basics.to_street_address_form, class="form-control form-control-sm" ) }}
                                     </div>
                                 </div>
                                 <div class="col-auto">
                                     <label class="form-label">Suite/Apt</label>
                                     <div class="col-12">
-                                        {{ latest_shipping_choice.to_apt_suite }}
+                                        {{ render_field(package_basics.to_suitapt_form, class="form-control form-control-sm" ) }}
                                     </div>
                                 </div>
                                 <div class="col-auto">
                                     <label class="form-label">City</label>
                                     <div class="col-12">
-                                        {{ latest_shipping_choice.to_city }}
+                                        {{ render_field(package_basics.to_city_form, class="form-control form-control-sm" ) }}
                                     </div>
                                 </div>
 
@@ -173,13 +368,13 @@
                                     <div class="col-7">
                                         <label class="form-label">State/Province</label>
                                         <div class="col-12">
-                                            {{ latest_shipping_choice.to_state }}
+                                            {{ render_field(package_basics.to_state_form, class="form-control form-control-sm" ) }}
                                         </div>
                                     </div>
                                     <div class="col-5">
                                         <label class="form-label">Zip Code</label>
                                         <div class="col-12">
-                                            {{ user_choices_shipping.to_zip }}
+                                            {{ render_field(package_basics.to_zip_form, class="form-control form-control-sm" ) }}
                                         </div>
                                     </div>
                                 </div>
@@ -188,13 +383,13 @@
                                 <div class="col-auto">
                                     <label class="form-label">Country</label>
                                     <div class="col-12">
-                                        {{ latest_shipping_choice.to_country }}
+                                        {{ render_field(package_basics.to_country_form, class="form-control form-control-sm" ) }}
                                     </div>
                                 </div>
                                 <div class="col-auto">
                                     <label class="form-label">Phone Number (Optional)</label>
                                     <div class="col-12">
-                                        {{ latest_shipping_choice.to_phone_number }}
+                                        {{ render_field(package_basics.to_phone_form, class="form-control form-control-sm" ) }}
                                     </div>
                                 </div>
                             </div>
@@ -202,214 +397,27 @@
                             <div class="col-6 offset-3 mt-3 mb-3 ">
                                 <label class="form-label">Signature Required</label>
                                 <div class="col-12">
-                                    {% if latest_shipping_choice.signature_required == 1 %}
-                                        Signature Required
-                                    {% else %}
-                                        No Signature
-                                    {% endif %}
-                                </div>
-                            </div>
 
-
-                        </div>
-                    </div>
-                </div>
-
-
-
-            {% else %}
-
-                <form method="post"
-                      action="{{ url_for('index') }}" >
-                    {{ package_basics.csrf_token }}
-
-                    <div class="row first_color mb-2">
-                        <div class="col-6 text-center p-3">
-                            <div class="col-12 text-center h5">
-                                Dimensions
-                            </div>
-                            <div class="row">
-                                <div class="col-4">
-                                    <label class="form-label">Length</label>
-                                    {{ render_field(package_basics.length, class="form-control form-control-sm" ) }}
-                                </div>
-                                <div class="col-4">
-                                    <label class="form-label">Width</label>
-                                    {{ render_field(package_basics.width, class="form-control form-control-sm" ) }}
-                                </div>
-                                <div class="col-4">
-                                    <label class="form-label">Height</label>
-                                    {{ render_field(package_basics.height, class="form-control form-control-sm" ) }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 text-center p-3">
-                            <div class="col-12 text-center h5">
-                                Weight
-                            </div>
-                            <div class="row">
-                                <div class="col-2"></div>
-                                <div class="col-4">
-                                    <label class="form-label">Pounds</label>
-                                    {{ render_field(package_basics.weight_one, class="form-control form-control-sm" ) }}
-                                </div>
-                                <div class="col-4">
-                                    <label class="form-label">Ounces</label>
-                                    {{ render_field(package_basics.weight_two, class="form-control form-control-sm" ) }}
-                                </div>
-                                <div class="col-2"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row first_color p-2 mb-2" >
-
-                        <div class="col-12 text-center h4">
-                            Information
-                        </div>
-
-                        <div class="col-6">
-
-                            <div class="col-12 text-center h5">
-                                From
-                            </div>
-                            <div class="col-auto">
-                                <label class="form-label">Name</label>
-                                <div class="col-12">
-                                    {{ render_field(package_basics.from_name_form, class="form-control form-control-sm" ) }}
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <label class="form-label">Address</label>
-                                <div class="col-12">
-                                    {{ render_field(package_basics.from_street_address_form, class="form-control form-control-sm" ) }}
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <label class="form-label">Suite/Apt</label>
-                                <div class="col-12">
-                                    {{ render_field(package_basics.from_suitapt_form, class="form-control form-control-sm" ) }}
-                                </div>
-                            </div>
-
-                            <div class="col-7">
-                                <label class="form-label">City</label>
-                                <div class="col-12">
-                                    {{ render_field(package_basics.from_city_form, class="form-control form-control-sm" ) }}
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-7">
-                                    <label class="form-label">State/Province</label>
-                                    <div class="col-12">
-                                        {{ render_field(package_basics.from_state_form, class="form-control form-control-sm" ) }}
-                                    </div>
-                                </div>
-
-                                <div class="col-5">
-                                    <label class="form-label">Zip Code</label>
-                                    <div class="col-12">
-                                        {{ render_field(package_basics.from_zip_form, class="form-control form-control-sm" ) }}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <label class="form-label">Country</label>
-                                <div class="col-12">
-                                    {{ render_field(package_basics.from_country_form, class="form-control form-control-sm" ) }}
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <label class="form-label">Phone Number (Optional)</label>
-                                <div class="col-12">
-                                    {{ render_field(package_basics.from_phone_form, class="form-control form-control-sm" ) }}
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="col-6">
-                            <div class="col-12 text-center h5">
-                                To
-                            </div>
-                            <div class="col-auto">
-                                <label class="form-label">Name</label>
-                                <div class="col-12">
-                                    {{ render_field(package_basics.to_name_form, class="form-control form-control-sm" ) }}
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <label class="form-label">Street</label>
-                                <div class="col-12">
-                                    {{ render_field(package_basics.to_street_address_form, class="form-control form-control-sm" ) }}
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <label class="form-label">Suite/Apt</label>
-                                <div class="col-12">
-                                    {{ render_field(package_basics.to_suitapt_form, class="form-control form-control-sm" ) }}
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <label class="form-label">City</label>
-                                <div class="col-12">
-                                    {{ render_field(package_basics.to_city_form, class="form-control form-control-sm" ) }}
-                                </div>
-                            </div>
-
-
-                            <div class="row">
-                                <div class="col-7">
-                                    <label class="form-label">State/Province</label>
-                                    <div class="col-12">
-                                        {{ render_field(package_basics.to_state_form, class="form-control form-control-sm" ) }}
-                                    </div>
-                                </div>
-                                <div class="col-5">
-                                    <label class="form-label">Zip Code</label>
-                                    <div class="col-12">
-                                        {{ render_field(package_basics.to_zip_form, class="form-control form-control-sm" ) }}
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <div class="col-auto">
-                                <label class="form-label">Country</label>
-                                <div class="col-12">
-                                    {{ render_field(package_basics.to_country_form, class="form-control form-control-sm" ) }}
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <label class="form-label">Phone Number (Optional)</label>
-                                <div class="col-12">
-                                    {{ render_field(package_basics.to_phone_form, class="form-control form-control-sm" ) }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-6 offset-3 mt-3 mb-3 ">
-                            <label class="form-label">Signature Required</label>
-                            <div class="col-12">
-
-                                {{ render_field(package_basics.signature_required,
+                                    {{ render_field(package_basics.signature_required,
                              class="form-control form-control-sm" ) }}
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- see if there is any shpping selection to be made -->
+                            <!-- see if there is any shpping selection to be made -->
 
-                        <div class="row second_color mb-2">
-                            <!-- Submit Post -->
-                            <div class="row  text-center mt-3 mb-3">
-                                <div class="col-12">
-                                    {{ render_field(package_basics.package_submit_form,
+                            <div class="row second_color mb-2">
+                                <!-- Submit Post -->
+                                <div class="row  text-center mt-3 mb-3">
+                                    <div class="col-12">
+                                        {{ render_field(package_basics.package_submit_form,
                                 value="Add to Cart",
                                 class="btn btn-dark btn-block") }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </form>
-            {% endif %}
+                    </form>
+                {% endif %}
             <div class="row first_color mt-3 mb-3">
                 <div class="col-12  text-center ">
                     <form method="post"
@@ -425,7 +433,7 @@
                                     </div>
                                 {% endfor %}
                             </div>
-                              {{ render_field(shipchoiceform.submit,value="Select Payment",class="btn btn-dark btn-block") }}
+                            {{ render_field(shipchoiceform.submit,value="Select Payment",class="btn btn-dark btn-block") }}
                         {% endif %}
 
                     </form>
@@ -468,14 +476,14 @@
             {% endif %}
             {% if get_user_order %}
                 {% if get_user_listed_items %}
-                <div class="col-12  text-center ">
-                    <a class="btn btn-warning" type="button" href="{{ url_for('second_page') }}">
-                        Checkout
-                    </a>
-                </div>
+                    <div class="col-12  text-center ">
+                        <a class="btn btn-warning" type="button" href="{{ url_for('second_page') }}">
+                            Checkout
+                        </a>
+                    </div>
                 {% endif %}
             {% endif %}
 
-        </div>
+    </div>
     </div>
 {% endblock %}

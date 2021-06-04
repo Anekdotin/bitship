@@ -12,8 +12,8 @@ class XmrPrices(db.Model):
 
 class MoneroBlockHeight(db.Model):
     __tablename__ = 'monero_blockheight'
-    __bind_key__ = 'avengers'
-    __table_args__ = {"schema": "avengers_wallet_monero", "useexisting": True}
+    __bind_key__ = 'shipbit'
+    __table_args__ = {"schema": "public"}
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     blockheight = db.Column(db.Integer)
@@ -21,8 +21,8 @@ class MoneroBlockHeight(db.Model):
 
 class MoneroUnconfirmed(db.Model):
     __tablename__ = 'monero_unconfirmed'
-    __bind_key__ = 'avengers'
-    __table_args__ = {"schema": "avengers_wallet_monero", "useexisting": True}
+    __bind_key__ = 'shipbit'
+    __table_args__ = {"schema": "public"}
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer)
