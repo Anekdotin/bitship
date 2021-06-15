@@ -1,0 +1,179 @@
+
+<div class="row first_color mb-2">
+    <div class="col-12 text-center p-3">
+
+        <div class="row first_color mb-2">
+            <div class="col-6 text-center p-3">
+                <div class="col-12 text-center h5">
+                    Dimensions
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <label class="form-label">Length</label>
+                        {{ latest_shipping_choice.length }}
+                        {{ latest_shipping_choice.length }}
+                    </div>
+                    <div class="col-4">
+                        <label class="form-label">Width</label>
+                        {{ latest_shipping_choice.width }}
+                    </div>
+                    <div class="col-4">
+                        <label class="form-label">Height</label>
+                        {{ latest_shipping_choice.height }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 text-center p-3">
+                <div class="col-12 text-center h5">
+                    Weight
+                </div>
+                <div class="row">
+                    <div class="col-2"></div>
+                    <div class="col-4">
+                        <label class="form-label">Pounds</label>
+                        {{ latest_shipping_choice.weight_one }}
+                    </div>
+                    <div class="col-4">
+
+                    </div>
+                    <div class="col-2"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row first_color p-2 mb-2" >
+
+            <div class="col-12 text-center h4">
+                Information
+            </div>
+
+            <div class="col-6">
+
+                <div class="col-12 text-center h5">
+                    From
+                </div>
+                <div class="col-auto">
+                    <label class="form-label">Name</label>
+                    <div class="col-12">
+                        {{ latest_shipping_choice.from_name }}
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <label class="form-label">Address</label>
+                    <div class="col-12">
+                        {{ latest_shipping_choice.from_street_address }}
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <label class="form-label">Suite/Apt</label>
+                    <div class="col-12">
+                        {{ latest_shipping_choice.from_apt_suite }}
+                    </div>
+                </div>
+
+                <div class="col-7">
+                    <label class="form-label">City</label>
+                    <div class="col-12">
+                        {{ latest_shipping_choice.from_city }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-7">
+                        <label class="form-label">State/Province</label>
+                        <div class="col-12">
+                            {{ latest_shipping_choice.from_state }}
+                        </div>
+                    </div>
+
+                    <div class="col-5">
+                        <label class="form-label">Zip Code</label>
+                        <div class="col-12">
+                            {{ latest_shipping_choice.from_zip }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <label class="form-label">Country</label>
+                    <div class="col-12">
+                        {{ latest_shipping_choice.from_country }}
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <label class="form-label">Phone Number (Optional)</label>
+                    <div class="col-12">
+                        {{ latest_shipping_choice.from_phone_number }}
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-6">
+                <div class="col-12 text-center h5">
+                    To
+                </div>
+                <div class="col-auto">
+                    <label class="form-label">Name</label>
+                    <div class="col-12">
+                        {{ latest_shipping_choice.to_name }}
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <label class="form-label">Street</label>
+                    <div class="col-12">
+                        {{ latest_shipping_choice.to_street_address }}
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <label class="form-label">Suite/Apt</label>
+                    <div class="col-12">
+                        {{ latest_shipping_choice.to_apt_suite }}
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <label class="form-label">City</label>
+                    <div class="col-12">
+                        {{ latest_shipping_choice.to_city }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-7">
+                        <label class="form-label">State/Province</label>
+                        <div class="col-12">
+                            {{ latest_shipping_choice.to_state }}
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        <label class="form-label">Zip Code</label>
+                        <div class="col-12">
+                            {{ user_choices_shipping.to_zip }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-auto">
+                    <label class="form-label">Country</label>
+                    <div class="col-12">
+                        {{ latest_shipping_choice.to_country }}
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <label class="form-label">Phone Number (Optional)</label>
+                    <div class="col-12">
+                        {{ latest_shipping_choice.to_phone_number }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 offset-3 mt-3 mb-3 ">
+                <label class="form-label">Signature Required</label>
+                <div class="col-12">
+                    {% if latest_shipping_choice.signature_required == 1 %}
+                        Signature Required
+                    {% else %}
+                        No Signature
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

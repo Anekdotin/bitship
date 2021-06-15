@@ -9,17 +9,25 @@ from decimal import Decimal
 from datetime import datetime
 from app import db, app
 
-from app.main.forms import PackageFormUSPS, \
-    CartForm,\
+from app.main.forms import \
+    PackageFormUSPS, \
+    CartForm, \
     SelectPaymentForm, \
-    SelectShippingChoiceForm
+    SelectShippingChoiceForm, \
+    TrackingForm
 
 from app.classes.models import User
-from app.classes.shipping import ShippingChoices,\
-    Orders,\
+from app.classes.shipping import ShippingChoices, \
+    Orders, \
     OrderItem
+from app.classes.models import BtcPrices, BchPrices, XmrPrices
 
-from app.shipping_api.test import test_basic
+from app.conversions.shipping_selection_usps import shipping_box_type
+from app.conversions.conversions import \
+    btc_local_to_crypto,\
+    bch_local_to_crypto, \
+    xmr_local_to_crypto
+from app.shipping_api.test import test_basic, tracking
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -40,10 +48,8 @@ def index():
         .filter(User.user_ip == current_ip, User.user_agent == current_user_agent) \
         .first()
 
-    # list of rates
+    # list of rates need to see if there is a shipment..if not get it
     rates_list = []
-
-    # need to see if there is a shipment..if not get it
 
     if request.method == 'GET':
 
@@ -94,22 +100,14 @@ def index():
         if package_basics.package_submit_form.data:
             print("@!1")
             print("creating new item")
+
             # form data basics
             f_country = package_basics.from_country_form.data
             from_country = f_country.ab
-
             t_country = package_basics.to_country_form.data
             to_country = t_country.ab
 
             # set as default usps right now..change later
-            type_of_shipping = 1
-            # what service was selected
-            if type_of_shipping == 1:
-                shipping_service_selected = 'USPS'
-            elif type_of_shipping == 2:
-                shipping_service_selected = 'UPS'
-            else:
-                shipping_service_selected = 'FEDEX'
 
             # create a current user if we cant find one
             if get_current_user is None:
@@ -128,6 +126,21 @@ def index():
                     .filter(User.user_ip == current_ip,
                             User.user_agent == current_user_agent) \
                     .first()
+                if get_current_user is None:
+                    new_user_id = str(uuid.uuid4())
+                    new_user = User(
+                        unique_id=new_user_id,
+                        last_seen=now,
+                        user_ip=current_ip,
+                        user_agent=current_user_agent
+                    )
+                    db.session.add(new_user)
+                    db.session.commit()
+                    get_current_user = db.session \
+                        .query(User) \
+                        .filter(User.user_ip == current_ip,
+                                User.user_agent == current_user_agent) \
+                        .first()
 
             # see if order exists if not create it
             get_user_order = db.session \
@@ -142,6 +155,10 @@ def index():
                     total_cost_bch=0,
                     total_cost_xmr=0,
                     total_cost_usd=0,
+                    order_payment_type=0,
+                    new_selection=0,
+                    status=0
+
                 )
                 db.session.add(neworder)
                 db.session.commit()
@@ -150,13 +167,31 @@ def index():
                     .filter(get_current_user.id == Orders.user_id) \
                     .first()
             else:
+
                 neworder = db.session \
                     .query(Orders) \
                     .filter(get_current_user.id == Orders.user_id) \
                     .first()
 
+            # get the form shipping option of package size
+            shipping_option_selected = request.form['what_shipping_method']
+
+            if shipping_option_selected == 1:
+                the_length = package_basics.weight_one.data
+                the_width = package_basics.weight_one.data
+                the_height = package_basics.weight_one.data
+                the_weight = package_basics.weight_one.data
+                imp_or_met = request.form['metric_or_imperial']
+            else:
+                the_length, \
+                    the_width, \
+                    the_height, \
+                    the_weight = shipping_box_type(selected_shipping_choices=shipping_option_selected)
+                imp_or_met = 1
+
             #  Call the USPS Functions
             #  function returns  shipping info
+
             shipment_data = test_basic.get_rates_usps(
                 from_name=package_basics.from_name_form.data,
                 from_address_1=package_basics.from_street_address_form.data,
@@ -176,12 +211,11 @@ def index():
                 to_country=to_country,
                 to_phone=package_basics.from_phone_form.data,
 
-                mass_unit_type=package_basics.from_name_form.data,
-                unit_length=package_basics.length.data,
-                unit_width=package_basics.width.data,
-                unit_height=package_basics.height.data,
-
-                unit_weight=package_basics.weight_one.data,
+                mass_unit_type=imp_or_met,
+                unit_length=the_length,
+                unit_width=the_width,
+                unit_height=the_height,
+                unit_weight=the_weight,
             )
 
             # location # grab data from parcel respons so we know its accurate
@@ -230,14 +264,13 @@ def index():
                 return redirect(url_for('index'))
             else:
                 for f in rates_list:
-
                     # calculate a 1$ profit for each label
                     shipment_cost = Decimal(f[3])
-
                     profit = Decimal(shipment_cost) + Decimal(1.00)
 
                     shipment_selection = ShippingChoices(
                         object_created=now,
+                        order_id=get_user_order.id,
                         owner_user_id=get_current_user.id,
                         object_id=f[0],
                         shipment=f[1],
@@ -281,6 +314,7 @@ def index():
                     db.session.add(shipment_selection)
 
                 # need to signal to jinja for popup that there is a shipping selection
+
                 neworder.new_selection = 1
 
                 db.session.add(neworder)
@@ -292,7 +326,6 @@ def index():
             print("adding order")
             data = request.form['selectpayment']
 
-            print(data)
             get_user_order = db.session \
                 .query(Orders) \
                 .filter(get_current_user.id == Orders.user_id) \
@@ -310,7 +343,12 @@ def index():
                 type_of_shipping = 2
             else:
                 type_of_shipping = 3
+
             print("creating an item")
+            if get_the_shipping_choice.mass_unit == "lb":
+                metric_or_imp = 1
+            else:
+                metric_or_imp = 2
             # add the shipment choice as an item
             # create a new order item
             new_shipment = OrderItem(
@@ -323,7 +361,7 @@ def index():
                 type_of_package=1,
                 type_of_package_name=get_the_shipping_choice.name,
                 service=type_of_shipping,
-                metric_or_imperial=1,
+                metric_or_imperial=metric_or_imp,
 
                 length_of_package=get_the_shipping_choice.length,
                 width_of_package=get_the_shipping_choice.width,
@@ -353,9 +391,7 @@ def index():
                 cost_btc=0,
                 cost_bch=0,
                 cost_xmr=0,
-
                 signature_required=0
-
             )
 
             db.session.add(new_shipment)
@@ -399,12 +435,21 @@ def second_page():
         .query(OrderItem) \
         .filter(get_current_user.id == OrderItem.user_id) \
         .all()
+
     order = db.session \
         .query(Orders) \
         .filter(get_current_user.id == Orders.user_id) \
         .first()
 
+    list_of_prices = []
+    for f in get_user_order_items:
+        list_of_prices.append(f.cost_usd)
+
     if request.method == 'GET':
+
+        order.total_cost_usd = sum(list_of_prices)
+        db.session.add(order)
+        db.session.commit()
 
         return render_template('second_page.html',
                                get_user_order_items=get_user_order_items,
@@ -412,6 +457,7 @@ def second_page():
 
     if request.method == 'POST':
         data = request.form['whatcoin']
+        flash(data)
         if data == '1':
             payment_order_type = 1
         elif data == '2':
@@ -419,7 +465,7 @@ def second_page():
         elif data == '3':
             payment_order_type = 3
         else:
-            payment_order_type = 0
+            payment_order_type = 4
 
         order.order_payment_type = payment_order_type
 
@@ -431,31 +477,44 @@ def second_page():
 
 @app.route('/confirmorder', methods=['GET'])
 def third_page():
+    # this page asks for the payment
+    # then it confirms the orders
 
-    ##TODO GET CRYPTO PRICE OF EACH ORDERITEM AND ADD TO ORDER
+    current_ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+    current_user_agent = request.headers.get('User-Agent')
+
+    get_current_user = db.session \
+        .query(User) \
+        .filter(User.user_ip == current_ip, User.user_agent == current_user_agent) \
+        .first()
+
+    get_user_order_items = db.session \
+        .query(OrderItem) \
+        .filter(get_current_user.id == OrderItem.user_id) \
+        .all()
+    order = db.session \
+        .query(Orders) \
+        .filter(get_current_user.id == Orders.user_id) \
+        .first()
 
     if request.method == 'GET':
-
-        current_ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
-        current_user_agent = request.headers.get('User-Agent')
-
-        get_current_user = db.session \
-            .query(User) \
-            .filter(User.user_ip == current_ip, User.user_agent == current_user_agent) \
-            .first()
-
-        get_user_order_items = db.session \
-            .query(OrderItem) \
-            .filter(get_current_user.id == OrderItem.user_id) \
-            .all()
-        order = db.session \
-            .query(Orders) \
-            .filter(get_current_user.id == Orders.user_id) \
-            .first()
+        if order.order_payment_type == 1:
+            # bitcoin
+            the_price_in_crypto = btc_local_to_crypto(order.total_cost_usd)
+        elif order.order_payment_type == 2:
+            # bitcoin Cash
+            the_price_in_crypto = bch_local_to_crypto(order.total_cost_usd)
+        elif order.order_payment_type == 3:
+            # monero
+            the_price_in_crypto = xmr_local_to_crypto(order.total_cost_usd)
+        else:
+            # bitcoin
+            the_price_in_crypto = btc_local_to_crypto(order.total_cost_usd)
 
         return render_template('third_page.html',
                                get_current_user=get_current_user,
                                order=order,
+                               the_price_in_crypto=the_price_in_crypto,
                                get_user_order_items=get_user_order_items)
 
     if request.method == 'POST':
@@ -473,25 +532,43 @@ def delete_order(order_id):
 
         db.session.delete(the_item)
         db.session.commit()
+
         flash("Order Deleted", category="danger")
         return redirect(url_for('index'))
 
 
-@app.route('/tracking', methods=['GET'])
+@app.route('/tracking', methods=['GET', 'POST'])
 def tracking():
-    if request.method == 'GET':
+    # Get User
+    current_ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+    current_user_agent = request.headers.get('User-Agent')
+    get_current_user = db.session \
+        .query(User) \
+        .filter(User.user_ip == current_ip, User.user_agent == current_user_agent) \
+        .first()
 
-        return render_template('main/tracking.html')
+    if request.method == 'GET':
+        tracking_form = TrackingForm()
+
+        return render_template('main/tracking.html',
+                               tracking_form=tracking_form,
+                               get_current_user=get_current_user,
+
+                               )
 
     if request.method == 'POST':
-        pass
+        data = request.form['tracking_form']
+        print(data)
+        return redirect(url_for('tracking'))
 
 
 @app.route('/cart', methods=['GET'])
 def view_cart():
+
     if request.method == 'GET':
 
-        return render_template('main/cart.html')
+        return render_template('main/cart.html',
+                               )
 
     if request.method == 'POST':
         pass

@@ -1,0 +1,140 @@
+<div class="col-6">
+
+    <div class="col-12 text-center h5">
+        From
+    </div>
+    <div class="col-auto">
+        <label class="form-label">Name</label>
+        <div class="col-12">
+            {{ render_field(package_basics.from_name_form, class="form-control form-control-sm" ) }}
+        </div>
+    </div>
+    <div class="col-auto">
+        <label class="form-label">Address</label>
+        <div class="col-12">
+            {{ render_field(package_basics.from_street_address_form, class="form-control form-control-sm" ) }}
+        </div>
+    </div>
+    <div class="col-auto">
+        <label class="form-label">Suite/Apt</label>
+        <div class="col-12">
+            {{ render_field(package_basics.from_suitapt_form, class="form-control form-control-sm" ) }}
+        </div>
+    </div>
+
+    <div class="col-7">
+        <label class="form-label">City</label>
+        <div class="col-12">
+            {{ render_field(package_basics.from_city_form, class="form-control form-control-sm" ) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-7">
+            <label class="form-label">State/Province</label>
+            <div class="col-12">
+                {{ render_field(package_basics.from_state_form, class="form-control form-control-sm" ) }}
+            </div>
+        </div>
+
+        <div class="col-5">
+            <label class="form-label">Zip Code</label>
+            <div class="col-12">
+                {{ render_field(package_basics.from_zip_form, class="form-control form-control-sm" ) }}
+            </div>
+        </div>
+    </div>
+    <div class="col-auto">
+        <label class="form-label">Country</label>
+        <div class="col-12">
+            {{ render_field(package_basics.from_country_form, class="form-control form-control-sm" ) }}
+        </div>
+    </div>
+    <div class="col-auto">
+        <label class="form-label">Phone Number (Optional)</label>
+        <div class="col-12">
+            {{ render_field(package_basics.from_phone_form, class="form-control form-control-sm" ) }}
+        </div>
+    </div>
+
+</div>
+<div class="col-6">
+    <div class="col-12 text-center h5">
+        To
+    </div>
+    <div class="col-auto">
+        <label class="form-label">Name</label>
+        <div class="col-12">
+            {{ render_field(package_basics.to_name_form, class="form-control form-control-sm" ) }}
+        </div>
+    </div>
+    <div class="col-auto">
+        <label class="form-label">Street</label>
+        <div class="col-12">
+            {{ render_field(package_basics.to_street_address_form, class="form-control form-control-sm" ) }}
+        </div>
+    </div>
+    <div class="col-auto">
+        <label class="form-label">Suite/Apt</label>
+        <div class="col-12">
+            {{ render_field(package_basics.to_suitapt_form, class="form-control form-control-sm" ) }}
+        </div>
+    </div>
+    <div class="col-auto">
+        <label class="form-label">City</label>
+        <div class="col-12">
+            {{ render_field(package_basics.to_city_form, class="form-control form-control-sm" ) }}
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-7">
+            <label class="form-label">State/Province</label>
+            <div class="col-12">
+                {{ render_field(package_basics.to_state_form, class="form-control form-control-sm" ) }}
+            </div>
+        </div>
+        <div class="col-5">
+            <label class="form-label">Zip Code</label>
+            <div class="col-12">
+                {{ render_field(package_basics.to_zip_form, class="form-control form-control-sm" ) }}
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-auto">
+        <label class="form-label">Country</label>
+        <div class="col-12">
+            {{ render_field(package_basics.to_country_form, class="form-control form-control-sm" ) }}
+        </div>
+    </div>
+    <div class="col-auto">
+        <label class="form-label">Phone Number (Optional)</label>
+        <div class="col-12">
+            {{ render_field(package_basics.to_phone_form, class="form-control form-control-sm" ) }}
+        </div>
+    </div>
+</div>
+
+<div class="col-6 offset-3 mt-3 mb-3 ">
+    <label class="form-label">Signature Required</label>
+    <div class="col-12">
+
+        {{ render_field(package_basics.signature_required,
+                             class="form-control form-control-sm" ) }}
+    </div>
+</div>
+
+<!-- see if there is any shpping selection to be made -->
+
+<div class="row second_color mb-2">
+    <!-- Submit Post -->
+    <div class="row  text-center mt-3 mb-3">
+        <div class="col-12">
+            {{ render_field(package_basics.package_submit_form,
+                                value="Add to Cart",
+                                class="btn btn-dark btn-block") }}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,247 @@
+
+<div class="row mb-2">
+
+    <!--Custom Package -->
+    <div class="col-12 border">
+        <div class="row">
+            <div class="col-1 pt-3 ">
+                <input type="radio" name="what_shipping_method" value="1" id="1a" >
+            </div>
+            <div class="col-3 font-weight-bold">
+                Custom Package
+            </div>
+            <div class="col-2 pt-3">
+
+            </div>
+            <div class="col-5 text-left">
+
+                <!--Legal Letter -->
+
+                <div class="row">
+                    <div class="col-6">
+                        Metric
+                    </div>
+                    <div class="col-6 ">
+                        <input type="radio" name="metric_or_imperial" value="1" id="1a" >
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 ">
+                        Imperial
+                    </div>
+                    <div class="col-6 ">
+                        <input type="radio" name="metric_or_imperial" value="2" id="1a" >
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-4">
+                        <label class="form-label">Length</label>
+                        {{ render_field(package_basics.length, class="form-control form-control-sm" ) }}
+                    </div>
+                    <div class="col-4">
+                        <label class="form-label">Width</label>
+                        {{ render_field(package_basics.width, class="form-control form-control-sm" ) }}
+                    </div>
+                    <div class="col-4">
+                        <label class="form-label">Height</label>
+                        {{ render_field(package_basics.height, class="form-control form-control-sm" ) }}
+                    </div>
+                </div>
+                <div class="col-12 text-center p-3">
+                    <div class="col-12 text-center h5">
+                        Weight
+                    </div>
+                    <div class="row ">
+
+                        <div class="col-6">
+                            <label class="form-label">lbs / kg </label>
+                            {{ render_field(package_basics.weight_one, class="form-control form-control-sm" ) }}
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">oz / g</label>
+                            {{ render_field(package_basics.weight_two, class="form-control form-control-sm" ) }}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!--Legal Letter -->
+    <div class="col-12 border ">
+        <div class="row">
+            <div class="col-1 pt-3">
+                <input type="radio" name="what_shipping_method" value="7" id="1a" >
+            </div>
+            <div class="col-3 d-none d-md-block">
+                <img src="{{ url_for('static',filename='images/usps_boxes/envelope.png')  }}"
+                     width="125px" height="75px">
+            </div>
+            <div class="col-7 pt-3">
+                Legal Letter
+            </div>
+
+        </div>
+    </div>
+
+
+    <!--Flat Rate Envolope Padded -->
+    <div class="col-12 border">
+        <div class="row">
+            <div class="col-1 pt-3">
+                <input type="radio" name="what_shipping_method" value="10" id="1a" >
+            </div>
+            <div class="col-3 d-none d-md-block">
+                <img src="{{ url_for('static',filename='images/usps_boxes/padded_flat_rate.jpg')  }}"
+                     width="100px" height="100px">
+            </div>
+            <div class="col-7 pt-3">
+                Flat Rate Envolope Padded
+            </div>
+        </div>
+    </div>
+
+
+    <!--Flat Rate Envolope Small -->
+    <div class="col-12 border">
+        <div class="row">
+            <div class="col-1 pt-3">
+                <input type="radio" name="what_shipping_method" value="11" id="1a" >
+            </div>
+            <div class="col-3 d-none d-md-block">
+                <img src="{{ url_for('static',filename='images/usps_boxes/legal_flat_rate.jpg')  }}"
+                     width="100px" height="100px">
+            </div>
+            <div class="col-7 pt-3">
+                Flat Rate Envolope Small
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <!-- Flat Rate Envolope Window -->
+    <div class="col-12 border">
+        <div class="row">
+            <div class="col-1 pt-3">
+                <input type="radio" name="what_shipping_method" value="12" id="1a" >
+            </div>
+            <div class="col-3 d-none d-md-block">
+                <img src="{{ url_for('static',filename='images/usps_boxes/window_flat_rate.jpg')  }}"
+                     width="100px" height="100px">
+            </div>
+            <div class="col-7 pt-3">
+                Flat Rate Envolope Window
+            </div>
+        </div>
+    </div>
+
+
+    <!--Flat Rate Envolope Gift Card -->
+    <div class="col-12 border">
+        <div class="row">
+            <div class="col-1 pt-3">
+                <input type="radio" name="what_shipping_method" value="13" id="1a" >
+            </div>
+            <div class="col-3 d-none d-md-block">
+                <img src="{{ url_for('static',filename='images/usps_boxes/gift_card_flat_rate_envolope.jpg')  }}"
+                     width="100px" height="100px">
+            </div>
+            <div class="col-7 pt-3">
+                Flat Rate Envolope Gift Card
+            </div>
+        </div>
+    </div>
+
+
+    <!--Flat Rate Envolope CardBoard -->
+    <div class="col-12 border">
+        <div class="row">
+            <div class="col-1 pt-3">
+                <input type="radio" name="what_shipping_method" value="14" id="1a" >
+            </div>
+            <div class="col-3">
+                <img src="{{ url_for('static',filename='images/usps_boxes/flat_rate_envolope.jpg')  }}"
+                     width="100px" height="100px">
+            </div>
+            <div class="col-7 pt-3">
+                Flat Rate Envolope CardBoard
+            </div>
+        </div>
+    </div>
+
+
+    <!--Flat Rate Box Small -->
+    <div class="col-12 border">
+        <div class="row">
+            <div class="col-1 pt-3">
+                <input type="radio" name="what_shipping_method" value="15" id="1a" >
+            </div>
+            <div class="col-3">
+                <img src="{{ url_for('static',filename='images/usps_boxes/small_flat_rate.jpg')  }}"
+                     width="100px" height="100px">
+            </div>
+            <div class="col-7 pt-3">
+                Flat Rate Box Small
+            </div>
+        </div>
+    </div>
+
+
+    <!--Flat Rate Box Medium' -->
+    <div class="col-12 border">
+        <div class="row">
+            <div class="col-1 pt-3">
+                <input type="radio" name="what_shipping_method" value="16" id="1a" >
+            </div>
+            <div class="col-3">
+                <img src="{{ url_for('static',filename='images/usps_boxes/medium_box.jpg')  }}"
+                     width="100px" height="100px">
+            </div>
+            <div class="col-7 pt-3">
+                Flat Rate Box Medium
+            </div>
+        </div>
+    </div>
+
+
+    <!--Flat Rate Box Large -->
+    <div class="col-12 border">
+        <div class="row">
+            <div class="col-1 pt-3">
+                <input type="radio" name="what_shipping_method" value="17" id="1a" >
+            </div>
+            <div class="col-3">
+                <img src="{{ url_for('static',filename='images/usps_boxes/large_box.jpg')  }}"
+                     width="100px" height="100px">
+            </div>
+            <div class="col-7 pt-3">
+                Flat Rate Box Large
+            </div>
+        </div>
+    </div>
+
+
+    <!--Flat Rate Box Large Board Game -->
+    <div class="col-12 border">
+        <div class="row">
+            <div class="col-1 pt-3">
+                <input type="radio" name="what_shipping_method" value="18" id="1a" >
+            </div>
+            <div class="col-3">
+                <img src="{{ url_for('static',filename='images/usps_boxes/board_box_game.jpg')  }}"
+                     width="100px" height="100px">
+            </div>
+            <div class="col-7 pt-3">
+                Flat Rate Box Large Board Game
+            </div>
+        </div>
+    </div>
+
+
+</div>

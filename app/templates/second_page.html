@@ -21,7 +21,7 @@
                                 {% for f in get_user_order_items %}
                                     <div class="row border m-2">
                                         <div class="col-3">
-                                                   From {{ f.from_name }} to {{ f.to_name }}
+                                            From {{ f.from_name }} to {{ f.to_name }}
                                         </div>
                                         <div class="col-3">
                                             {{ f.type_of_package }}
@@ -64,7 +64,7 @@
 
                             <div class="row mb-2">
                                 <div class="col-1 pt-3">
-                                    <input type="radio" name="whatcoin" value="a" id="q1a" >
+                                    <input type="radio" name="whatcoin" value="2" id="q1a" >
 
                                 </div>
                                 <div class="col-3">
@@ -77,13 +77,14 @@
                                 <div class="col-5 text-left">
                                     <ul>
                                         <li>Usually 1-15 mins (Very Fast)</li>
+                                        <li>Not Private </li>
                                     </ul>
                                 </div>
                             </div>
 
                             <div class="row mb-2">
                                 <div class="col-1 pt-3">
-                                    <input type="radio" name="whatcoin" value="b" id="q2b" >
+                                    <input type="radio" name="whatcoin" value="1" id="q2b" >
                                 </div>
                                 <div class="col-3">
                                     <img src="{{ url_for('static',filename='images/crypto/btc.png')  }}"
@@ -95,13 +96,14 @@
                                 <div class="col-5 text-left">
                                     <ul>
                                         <li>Usually 5 mins to 1 hour (slow) </li>
+                                        <li>Not Private </li>
                                     </ul>
                                 </div>
                             </div>
 
                             <div class="row mb-2">
                                 <div class="col-1 pt-3">
-                                    <input type="radio" name="whatcoin" value="c" id="q3c" >
+                                    <input type="radio" name="whatcoin" value="3" id="q3c" >
 
                                 </div>
                                 <div class="col-3">
@@ -109,11 +111,12 @@
                                          width="75px" height="75px">
                                 </div>
                                 <div class="col-2 pt-3">
-                                    Monero (XMR)
+                                    Monero (XMR) (private / medium speed)
                                 </div>
                                 <div class="col-5 ">
                                     <ul>
                                         <li>Usually 2-15 mins</li>
+                                        <li>Private/Secure </li>
                                     </ul>
                                 </div>
                             </div>

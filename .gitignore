@@ -2,3 +2,6 @@
 /config.py
 /passwords.py
 /todo.txt
+venv/
+/layout/
+.idea

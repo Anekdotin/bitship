@@ -1,5 +1,5 @@
 from app import db
-from datetime import datetime
+
 
 class BtcPrices(db.Model):
     __tablename__ = 'prices_btc'
@@ -17,7 +17,7 @@ class BchPrices(db.Model):
     price = db.Column(db.DECIMAL(50, 2))
 
 
-class MoneroPrices(db.Model):
+class XmrPrices(db.Model):
     __tablename__ = 'prices_monero'
     __bind_key__ = 'shipbit'
     __table_args__ = {"schema": "public"}
@@ -62,5 +62,17 @@ class User(db.Model):
     user_agent = db.Column(db.TEXT)
 
 
+class Tracking(db.Model):
+    __tablename__ = 'tracking'
+    __bind_key__ = 'shipbit'
+    __table_args__ = {"schema": "public"}
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    unique_id = db.Column(db.TEXT)
+    last_seen = db.Column(db.TIMESTAMP())
+    user_ip = db.Column(db.TEXT)
+    user_agent = db.Column(db.TEXT)
+
+
+db.configure_mappers()
 db.create_all()
 db.session.commit()

@@ -1,0 +1,31 @@
+<!-- Submit Post -->
+<div class="row first_color mt-3 mb-3">
+    <div class="col-12  text-center ">
+        My Cart
+    </div>
+    {#                    <div class="col-12  text-center ">Total Cost: {{  }}</div>#}
+    {#                    <div class="col-12  text-center ">Total Packages: {{  }}</div>#}
+    <div class="col-12  text-center ">
+        {% for f in get_user_listed_items %}
+            <div class="row border m-2">
+
+                <div class="col-3">
+                    From {{ f.from_name }} to {{ f.to_name }}
+                </div>
+                <div class="col-3">
+                    {{ f.type_of_package_name }}
+                </div>
+                <div class="col-3">
+                    {{ f.cost_usd }}
+                </div>
+                <div class="col-3">
+                    <a class="btn btn-warning"
+                       type="button"
+                       href="{{ url_for('delete_order', order_id=f.id) }}">
+                        X
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>

@@ -11,14 +11,10 @@ from app.classes.models import Country
 
 class PackageFormUSPS(FlaskForm):
     # Basic info of package
+    metric_or_imperial_form = StringField(validators=[DataRequired()])
 
     shipping_type = SelectField(u'Select Shipping', choices=[
         ('1', 'Custom Package'),
-        ('2', 'Flat'),
-        ('3', 'Parcel'),
-        ('4', 'Large Parcel'),
-        ('5', 'Irregular Parcel (Roles)'),
-        ('6', 'SoftPack'),
         ('7', 'letter'),
         ('8', 'Flat Rate Envolope Letter'),
         ('9', 'Flat Rate Envolope Legal'),
@@ -31,21 +27,15 @@ class PackageFormUSPS(FlaskForm):
         ('16', 'Flat Rate Box Medium'),
         ('17', 'Flat Rate Box Large'),
         ('18', 'Flat Rate Box Large Board Game'),
-        ('19', 'Regional Rate Box A'),
-        ('20', 'Regional Rate Box B'),
     ])
 
-    metric_or_imperial_form = StringField(validators=[DataRequired()])
-    length = StringField(validators=[DataRequired()])
+    length = StringField(validators=[Optional()])
+    width = StringField(validators=[Optional()])
+    height = StringField(validators=[Optional()])
+    weight_one = StringField(validators=[Optional()])
+    weight_two = StringField(validators=[Optional()])
 
-    width = StringField(validators=[DataRequired()])
-
-    height = StringField(validators=[DataRequired()])
-
-    weight_one = StringField(validators=[DataRequired()])
-    weight_two = StringField(validators=[DataRequired()])
-
-    signature_required = SelectField(u'Hour', choices=[('1', 'No Signature'),
+    signature_required = SelectField(u'Signature', choices=[('1', 'No Signature'),
                                                        ('2', 'Signature'),
                                                        ('3', 'Signature Required by Adult')])
     # From what address
@@ -124,4 +114,8 @@ class SelectPaymentForm(FlaskForm):
 
 class SelectShippingChoiceForm(FlaskForm):
 
+    submit = SubmitField('')
+
+
+class TrackingForm(FlaskForm):
     submit = SubmitField('')

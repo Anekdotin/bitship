@@ -1,8 +1,6 @@
 from app import app, db
 from decimal import Decimal
-from app.classes.monero import XmrPrices
-from app.classes.bitcoin import BtcPrices
-from app.classes.bitcoin_cash import BchPrices
+from app.classes.models import BtcPrices, BchPrices, XmrPrices
 
 
 def floating_decimals(f_val, dec):
@@ -11,7 +9,7 @@ def floating_decimals(f_val, dec):
 
 
 # BITCOIN
-def xmr_converttolocal(amount):
+def btc_crypto_to_local(amount):
     # convert monero amount to local
     getcurrentprice = db.session.query(BtcPrices).get(1)
     bt = getcurrentprice.price
@@ -20,7 +18,7 @@ def xmr_converttolocal(amount):
     return c
 
 
-def xmr_convertlocaltobtc(amount):
+def btc_local_to_crypto(amount):
     # convert local to bitcoin cash
     getcurrentprice = db.session.query(BtcPrices).get(1)
     bt = getcurrentprice.price
@@ -29,7 +27,7 @@ def xmr_convertlocaltobtc(amount):
     return c
 
 # BITCOIN CASH
-def btc_converttolocal(amount):
+def bch_crypto_to_local(amount):
     # convert bitcoin amount to local
     getcurrentprice = db.session.query(BchPrices).get(1)
     bt = getcurrentprice.price
@@ -38,7 +36,7 @@ def btc_converttolocal(amount):
     return c
 
 
-def btc_convertlocaltobtc(amount):
+def bch_local_to_crypto(amount):
     # convert local to bitcoin cash
     getcurrentprice = db.session.query(BchPrices).get(1)
     bt = getcurrentprice.price
@@ -48,7 +46,7 @@ def btc_convertlocaltobtc(amount):
 
 
 # MONERO
-def btc_cash_converttolocal(amount):
+def xmr_crypto_to_local(amount):
     # convert bitcoin cash amount to local
     getcurrentprice = db.session.query(XmrPrices).get(1)
     bt = getcurrentprice.price
@@ -57,7 +55,7 @@ def btc_cash_converttolocal(amount):
     return c
 
 
-def btc_cash_convertlocaltobtc(amount):
+def xmr_local_to_crypto(amount):
     # convert local to bitcoin cash
     getcurrentprice = db.session.query(XmrPrices).get(1)
     bt = getcurrentprice.price

@@ -1,0 +1,77 @@
+{% extends "layout_main.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-8 offset-2">
+
+            <div class="row">
+                <div class="col-12 text-center mt-5 h4">
+                    Your Cart
+                </div>
+
+                <div class="col-12 text-center">
+                    {% if order %}
+                    <div class="row">
+                        <div class="col-3">
+                            Order ID: <br>
+                            {{ order.id }}
+                        </div>
+                        <div class="col-3">
+                            Created: <br>
+                            {{ order.creation_time }}
+                        </div>
+                        <div class="col-3">
+                            Total: <br>
+                            ${{ order.total_cost_usd }}
+                        </div>
+                        <div class="col-3">
+                            Chosen Crypto: <br>
+                            {% if order.order_payment_type == 1 %}
+                                Bitcoin (BTC)
+                            {% elif order.order_payment_type == 2 %}
+                                Bitcoin Cash(BCH)
+                            {% elif order.order_payment_type == 3 %}
+                                Monero (XMR)
+                            {% else %}
+
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="col-12 text-center mt-5 h4">
+                    Pay for Order
+                </div>
+
+                <div class="col-12 text-center mt-5 ">
+                    Please pay the requested amount.  This amount exactly has to hit our wallet for your payment to complete.
+                    <br>
+                    Any other amount will be ignored so ensure the Fees are properly calculated.
+                </div>
+                <h5>
+                    {{ the_price_in_crypto }}
+                    {% if order.order_payment_type == 1 %}
+                        Bitcoin (BTC)
+                    {% elif order.order_payment_type == 2 %}
+                        Bitcoin Cash(BCH)
+                    {% elif order.order_payment_type == 3 %}
+                        Monero (XMR)
+                    {% else %}
+
+                    {% endif %}
+                </h5>
+                <div class="col-12 text-center mb-5">
+                    Status of Order
+                </div>
+                {% if order.status == 0 %}
+                    <h5 class="text-primary">Waiting on payment</h5>
+                {% elif order.status == 1 %}
+                    <h5 class="text-success">Order has been Paid.  Thank you!</h5>
+                {% else %}
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

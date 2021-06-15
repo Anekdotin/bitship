@@ -1,4 +1,37 @@
 {% extends "layout_main.html" %}
 {% block content %}
+    <div class="row first_color">
+        <div class="col-12" style="min-height: 500px">
+            <form method="post"
+                  class="row g-3 mt-3 mb-3"
+                  action="{{ url_for('tracking') }}">
+                {{ tracking_form.csrf_token }}
+                <div class="col-12 text-center">
+                    USPS Shipping
+                </div>
+                <div class="col-12">
+                    Tracking Number
+                </div>
+                <div class="col-12">
+                    <label for="tracking_usps" class="visually-hidden">Tracking Number</label>
+                    <textarea  type="text"
+                               class="form-control"
+                               name="tracking_form"
+                               id="2a" rows="15"
+                               style="width: 100%">
+                    </textarea>
 
+                </div>
+                <div class="col-12 text-center">
+                    <button type="submit" class="btn btn-primary mb-3">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <div class="row first_color">
+        <div class="col-12" style="min-height: 500px">
+        </div>
+    </div>
 {% endblock %}

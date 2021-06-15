@@ -23,6 +23,7 @@ class Orders(db.Model):
     order_payment_type = db.Column(db.Integer)
     # shows if there is a shipping selection
     new_selection = db.Column(db.Integer)
+    status = db.Column(db.Integer)
 
 
 class OrderItem(db.Model):
@@ -90,6 +91,8 @@ class ShippingChoices(db.Model):
     object_created = db.Column(db.TIMESTAMP())
     # users id
     owner_user_id = db.Column(db.Integer)
+    # main order id
+    order_id = db.Column(db.Integer)
     # object id
     object_id = db.Column(db.String(140))
     # shipment id
@@ -156,6 +159,7 @@ class ShippingChoices(db.Model):
     # options
     signature_required = db.Column(db.Integer)
 
-
+#
+db.configure_mappers()
 db.create_all()
 db.session.commit()
