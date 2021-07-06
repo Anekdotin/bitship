@@ -102,7 +102,7 @@ app.register_blueprint(wallet_bch_blueprint, url_prefix='/bch')
 
 
 
-# db.configure_mappers()
-db.create_all()
-db.session.commit()
-
+# # db.configure_mappers()
+# db.create_all()
+# db.session.commit()
+#

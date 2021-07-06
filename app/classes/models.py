@@ -73,6 +73,20 @@ class Tracking(db.Model):
     user_agent = db.Column(db.TEXT)
 
 
-db.configure_mappers()
-db.create_all()
-db.session.commit()
+class Transactions(db.Model):
+    __tablename__ = 'transactions'
+    __bind_key__ = 'shipbit'
+    __table_args__ = {"schema": "public"}
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    blockheight = db.Column(db.INTEGER)
+    address = db.Column(db.TEXT)
+    txid = db.Column(db.TEXT)
+    confirmations = db.Column(db.INTEGER)
+    amount_btc = db.Column(db.DECIMAL(20, 8))
+    amount_xmr = db.Column(db.DECIMAL(20, 8))
+    amount_bch = db.Column(db.DECIMAL(20, 8))
+
+
+# db.configure_mappers()
+# db.create_all()
+# db.session.commit()

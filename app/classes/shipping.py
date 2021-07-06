@@ -9,6 +9,7 @@ class Orders(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     # get current user ip
     user_id = db.Column(db.Integer)
+    order_code = db.Column(db.String(140))
     # time order was created
     creation_time = db.Column(db.TIMESTAMP())
 
@@ -23,6 +24,7 @@ class Orders(db.Model):
     order_payment_type = db.Column(db.Integer)
     # shows if there is a shipping selection
     new_selection = db.Column(db.Integer)
+
     status = db.Column(db.Integer)
 
 
@@ -79,6 +81,14 @@ class OrderItem(db.Model):
     cost_bch = db.Column(db.DECIMAL(20, 8))
     cost_xmr = db.Column(db.DECIMAL(20, 8))
     cost_usd = db.Column(db.DECIMAL(20, 2))
+
+    order_status = db.Column(db.String(140))
+
+    token = db.Column(db.String(140))
+    carrier_account = db.Column(db.String(140))
+
+    address_status = db.Column(db.String(140))
+    address_message = db.Column(db.TEXT)
 
 
 class ShippingChoices(db.Model):
@@ -158,8 +168,8 @@ class ShippingChoices(db.Model):
 
     # options
     signature_required = db.Column(db.Integer)
-
 #
-db.configure_mappers()
-db.create_all()
-db.session.commit()
+# #
+# db.configure_mappers()
+# db.create_all()
+# db.session.commit()

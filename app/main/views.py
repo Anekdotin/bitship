@@ -8,26 +8,34 @@ import uuid
 from decimal import Decimal
 from datetime import datetime
 from app import db, app
-
+from sqlalchemy.sql import func
 from app.main.forms import \
     PackageFormUSPS, \
     CartForm, \
     SelectPaymentForm, \
     SelectShippingChoiceForm, \
-    TrackingForm
+    TrackingForm, \
+    LostOrderForm
 
-from app.classes.models import User
-from app.classes.shipping import ShippingChoices, \
+from app.classes.models import \
+    User
+from app.classes.shipping import \
+    ShippingChoices, \
     Orders, \
     OrderItem
-from app.classes.models import BtcPrices, BchPrices, XmrPrices
+from app.classes.labels import ShippingLabels
 
-from app.conversions.shipping_selection_usps import shipping_box_type
+from app.conversions.shipping_selection_usps import \
+    shipping_box_type
 from app.conversions.conversions import \
-    btc_local_to_crypto,\
+    btc_local_to_crypto, \
     bch_local_to_crypto, \
     xmr_local_to_crypto
-from app.shipping_api.test import test_basic, tracking
+from app.conversions.tools import \
+    randomstring
+from app.shipping_api.live.basic import \
+    get_rates_usps
+
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -79,12 +87,23 @@ def index():
                 .order_by(ShippingChoices.object_created.desc()) \
                 .first()
 
+            total_cost_shipping = db.session \
+                .query(func.sum(OrderItem.cost_usd)) \
+                .filter(get_current_user.id == OrderItem.user_id) \
+                .all()
+            total_cost_shipping = total_cost_shipping[0][0]
+            total_number_items = db.session \
+                .query(OrderItem) \
+                .filter(get_current_user.id == OrderItem.user_id) \
+                .count()
+
         else:
             get_user_listed_items = None
             get_user_order = None
             user_choices_shipping = None
             latest_shipping_choice = None
-
+            total_number_items = None,
+            total_cost_shipping = None
         return render_template('index.html',
                                latest_shipping_choice=latest_shipping_choice,
                                package_basics=package_basics,
@@ -92,7 +111,9 @@ def index():
                                cartform=cartform,
                                get_user_listed_items=get_user_listed_items,
                                get_user_order=get_user_order,
-                               user_choices_shipping=user_choices_shipping
+                               user_choices_shipping=user_choices_shipping,
+                               total_number_items=total_number_items,
+                               total_cost_shipping=total_cost_shipping
                                )
 
     if request.method == 'POST':
@@ -148,6 +169,7 @@ def index():
                 .filter(get_current_user.id == Orders.user_id) \
                 .first()
             if get_user_order is None:
+                random_code = randomstring(20)
                 neworder = Orders(
                     creation_time=now,
                     user_id=get_current_user.id,
@@ -157,11 +179,12 @@ def index():
                     total_cost_usd=0,
                     order_payment_type=0,
                     new_selection=0,
-                    status=0
+                    status=0,
+                    order_code=random_code
 
                 )
                 db.session.add(neworder)
-                db.session.commit()
+                db.session.flush()
                 neworder = db.session \
                     .query(Orders) \
                     .filter(get_current_user.id == Orders.user_id) \
@@ -174,25 +197,25 @@ def index():
                     .first()
 
             # get the form shipping option of package size
-            shipping_option_selected = request.form['what_shipping_method']
+            shipping_option_selected = package_basics.shipping_type.data
 
             if shipping_option_selected == 1:
+                imp_or_met = request.form['metric_or_imperial']
+
                 the_length = package_basics.weight_one.data
                 the_width = package_basics.weight_one.data
                 the_height = package_basics.weight_one.data
                 the_weight = package_basics.weight_one.data
-                imp_or_met = request.form['metric_or_imperial']
+
             else:
                 the_length, \
-                    the_width, \
-                    the_height, \
-                    the_weight = shipping_box_type(selected_shipping_choices=shipping_option_selected)
+                the_width, \
+                the_height, \
+                the_weight = shipping_box_type(selected_shipping_choices=shipping_option_selected)
+
                 imp_or_met = 1
 
-            #  Call the USPS Functions
-            #  function returns  shipping info
-
-            shipment_data = test_basic.get_rates_usps(
+            shipment_data, status, message, type_of_error = get_rates_usps(
                 from_name=package_basics.from_name_form.data,
                 from_address_1=package_basics.from_street_address_form.data,
                 from_address_2=package_basics.from_suitapt_form.data,
@@ -263,6 +286,10 @@ def index():
                 flash('Incorrect address')
                 return redirect(url_for('index'))
             else:
+                get_user_order = db.session \
+                    .query(Orders) \
+                    .filter(get_current_user.id == Orders.user_id) \
+                    .first()
                 for f in rates_list:
                     # calculate a 1$ profit for each label
                     shipment_cost = Decimal(f[3])
@@ -349,12 +376,12 @@ def index():
                 metric_or_imp = 1
             else:
                 metric_or_imp = 2
+
             # add the shipment choice as an item
-            # create a new order item
+
             new_shipment = OrderItem(
                 main_shipment_id=get_the_shipping_choice.shipment,
                 object_id_selected_order=get_the_shipping_choice.object_id,
-
                 # Main Order Selection
                 user_id=get_current_user.id,
                 order_id=get_user_order.id,
@@ -362,6 +389,10 @@ def index():
                 type_of_package_name=get_the_shipping_choice.name,
                 service=type_of_shipping,
                 metric_or_imperial=metric_or_imp,
+
+                token=get_the_shipping_choice.token,
+                carrier_account=get_the_shipping_choice.carrier_account,
+                order_status=1,
 
                 length_of_package=get_the_shipping_choice.length,
                 width_of_package=get_the_shipping_choice.width,
@@ -391,7 +422,8 @@ def index():
                 cost_btc=0,
                 cost_bch=0,
                 cost_xmr=0,
-                signature_required=0
+                signature_required=0,
+
             )
 
             db.session.add(new_shipment)
@@ -415,7 +447,7 @@ def index():
             return redirect(url_for('index'))
 
         else:
-            pass
+            return redirect(url_for('index'))
 
 
 @app.route('/selectpayment', methods=['GET', 'POST'])
@@ -448,6 +480,7 @@ def second_page():
     if request.method == 'GET':
 
         order.total_cost_usd = sum(list_of_prices)
+
         db.session.add(order)
         db.session.commit()
 
@@ -457,45 +490,77 @@ def second_page():
 
     if request.method == 'POST':
         data = request.form['whatcoin']
-        flash(data)
+
         if data == '1':
+            # btc
             payment_order_type = 1
         elif data == '2':
+            # bch
             payment_order_type = 2
         elif data == '3':
+            # xmr
             payment_order_type = 3
         else:
             payment_order_type = 4
 
         order.order_payment_type = payment_order_type
+        order.status = 1
 
         db.session.add(order)
         db.session.commit()
 
-        return redirect(url_for('third_page'))
+        return redirect(url_for('third_page', ordercode=order.order_code))
 
 
-@app.route('/confirmorder', methods=['GET'])
-def third_page():
+@app.route('/lostorder', methods=['GET', 'POST'])
+def lost_order_page():
+    form = LostOrderForm()
+    if request.method == 'GET':
+        return render_template('main/recover.html',
+                               form=form)
+
+    if request.method == 'POST':
+        print("adding order")
+        order_id_lost = request.form['order_id']
+        if 10 <= len(order_id_lost) <= 30:
+            get_order = db.session \
+                .query(Orders) \
+                .filter(Orders.order_code == str(order_id_lost)) \
+                .first()
+            if get_order is not None:
+                return redirect(url_for('third_page', ordercode=get_order.order_code))
+            else:
+                flash("Order not found", category="danger")
+                return redirect(url_for('lost_order_page'))
+        else:
+            flash("Order not found", category="danger")
+            return redirect(url_for('lost_order_page'))
+
+
+@app.route('/confirm-payment/<string:ordercode>', methods=['GET'])
+def third_page(ordercode):
     # this page asks for the payment
-    # then it confirms the orders
 
     current_ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
     current_user_agent = request.headers.get('User-Agent')
 
     get_current_user = db.session \
         .query(User) \
-        .filter(User.user_ip == current_ip, User.user_agent == current_user_agent) \
+        .filter(User.user_ip == current_ip,
+                User.user_agent == current_user_agent) \
+        .first()
+
+    order = db.session \
+        .query(Orders) \
+        .filter(ordercode == Orders.order_code) \
         .first()
 
     get_user_order_items = db.session \
         .query(OrderItem) \
-        .filter(get_current_user.id == OrderItem.user_id) \
+        .filter(order.id == OrderItem.order_id) \
         .all()
-    order = db.session \
-        .query(Orders) \
-        .filter(get_current_user.id == Orders.user_id) \
-        .first()
+    if request.method == 'POST':
+        pass
 
     if request.method == 'GET':
         if order.order_payment_type == 1:
@@ -511,14 +576,21 @@ def third_page():
             # bitcoin
             the_price_in_crypto = btc_local_to_crypto(order.total_cost_usd)
 
+        if order.status == 5:
+            get_shipping_labels = db.session \
+                .query(ShippingLabels) \
+                .filter(get_current_user.id == ShippingLabels.user_id) \
+                .first()
+
+        else:
+            get_shipping_labels = None
+
         return render_template('third_page.html',
+                               get_shipping_labels=get_shipping_labels,
                                get_current_user=get_current_user,
                                order=order,
                                the_price_in_crypto=the_price_in_crypto,
                                get_user_order_items=get_user_order_items)
-
-    if request.method == 'POST':
-        pass
 
 
 @ app.route('/deleteorder/<int:order_id>', methods=['GET', 'POST'])
@@ -534,6 +606,7 @@ def delete_order(order_id):
         db.session.commit()
 
         flash("Order Deleted", category="danger")
+
         return redirect(url_for('index'))
 
 

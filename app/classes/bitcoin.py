@@ -1,7 +1,6 @@
 from app import db
 
 
-
 class BtcWalletAddresses(db.Model):
     __tablename__ = 'btc_wallet_addresses'
     __bind_key__ = 'shipbit'

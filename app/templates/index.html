@@ -1,37 +1,52 @@
 {% extends "layout_main.html" %}
 {% block content %}
-    <div class="row">
+    <div class="row mb-5">
 
         <div class="col-8 offset-2">
             <div class="row">
-                <div class="col-12 text-center ">
-                    Accepting Monero and Bitcoin Cash for all orders.
+                <div class="col-12 text-center mb-5">
+                    Accepting Monero, Bitcoin and Bitcoin Cash for all orders.  More currencies comming soon.
                 </div>
             </div>
 
             <div class="row first_color mb-2 p-3">
                 <div class="col-12 text-center h4">Carrier</div>
 
-                <div class="col-6 col-md-3 border border-dark ">
-                    <img src="{{ url_for('static', filename='images/usps.png')  }}"
-                         width="100px" height="50px">
+                <div class="col-6 col-md-3 pl-5">
+                    <div class="col-10 border border-success border-3">
+                        <img src="{{ url_for('static', filename='images/usps.png')  }}"
+                             width="100px" height="50px">
+                    </div>
+
                 </div>
 
                 <div class="col-6 col-md-3">
                     <img src="{{ url_for('static', filename='images/ups.png')  }}"
                          width="100px" height="50px">
+                    <br>
+                    Comming Soon
                 </div>
 
                 <div class="col-6 col-md-3">
                     <img src="{{ url_for('static', filename='images/fedex.png')  }}"
                          width="100px" height="50px">
+                    <br>
+                    Comming Soon
                 </div>
 
                 <div class="col-6 col-md-3">
                     <img src="{{ url_for('static', filename='images/canadapost.png')  }}"
                          width="100px" height="50px">
+                    <br>
+                    Comming Soon
                 </div>
             </div>
+
+            {% if get_user_listed_items %}
+                <div class="col-12 ">
+                    {% include 'index_usps/_user_listed_items.html' %}
+                </div>
+            {% endif %}
 
 
             {% if get_user_order.new_selection == 1 %}
@@ -40,41 +55,32 @@
                 {% include 'index_usps/create/_main_form.html' %}
             {% endif %}
 
-
-            <div class="row first_color mt-3 mb-3">
-                <div class="col-12  text-center ">
-                    <form method="post"
-                          action="{{ url_for('index') }}" >
-                        {{ shipchoiceform.csrf_token }}
-                        {% if get_user_order.new_selection == 1 %}
+            {% if get_user_order.new_selection == 1 %}
+                <div class="row first_color mt-3 mb-3">
+                    <div class="col-12  text-center ">
+                        <form method="post"
+                              action="{{ url_for('index') }}" >
+                            {{ shipchoiceform.csrf_token }}
                             <div class="row">
                                 {% for f in user_choices_shipping %}
-                                    <div class="col-6 col-sm-6 col-md-3">
-                                        <input type="radio" id={{ f.id }} name="selectpayment" value={{ f.object_id }}><br>
-                                        Name: {{ f.name }}<br>
-                                        Est Days:  {{ f.estimated_days }}<br>
+                                    <div class="col-6 col-sm-6 col-md-4 second_color m-2">
+                                        <input type="radio"
+                                               id={{ f.id }} name="selectpayment"
+                                               value={{ f.object_id }}>
+                                        <br>
+                                         {{ f.name }}<br>
+                                         Estimated {{ f.estimated_days }} days<br>
+                                        ${{ f.price_after_profit }} <br>
                                     </div>
                                 {% endfor %}
                             </div>
-                            {{ render_field(shipchoiceform.submit,value="Select Payment",class="btn btn-dark btn-block") }}
-                        {% endif %}
-
-                    </form>
-                </div>
-            </div>
-
-
-            {% if get_user_listed_items %}
-                {% include 'index_usps/_user_listed_items.html' %}
-            {% endif %}
-            {% if get_user_order %}
-                {% if get_user_listed_items %}
-                    <div class="col-12  text-center ">
-                        <a class="btn btn-warning" type="button" href="{{ url_for('second_page') }}">
-                            Checkout
-                        </a>
+                            {{ render_field(shipchoiceform.submit,
+                            value="Select Payment",
+                            class="btn btn-dark btn-block") }}
+                        </form>
                     </div>
-                {% endif %}
+                </div>
+
             {% endif %}
 
         </div>

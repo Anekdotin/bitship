@@ -4,42 +4,49 @@
         <div class="col-8 offset-2">
 
             <div class="row">
-                <div class="col-12 text-center mt-5 h4">
+                <div class="col-12 text-center mt-5 h3">
                     Your Cart
                 </div>
 
                 <div class="col-12 text-center">
                     {% if order %}
-                    <div class="row">
-                        <div class="col-3">
-                            Order ID: <br>
-                            {{ order.id }}
-                        </div>
-                        <div class="col-3">
-                            Created: <br>
-                            {{ order.creation_time }}
-                        </div>
-                        <div class="col-3">
-                            Total: <br>
-                            ${{ order.total_cost_usd }}
-                        </div>
-                        <div class="col-3">
-                            Chosen Crypto: <br>
-                            {% if order.order_payment_type == 1 %}
-                                Bitcoin (BTC)
-                            {% elif order.order_payment_type == 2 %}
-                                Bitcoin Cash(BCH)
-                            {% elif order.order_payment_type == 3 %}
-                                Monero (XMR)
-                            {% else %}
+                        <div class="row">
+                            <div class="col-3">
+                                Order ID: <br>
+                                {{ order.id }}
+                            </div>
+                            <div class="col-3">
+                                Created: <br>
+                                {{ order.creation_time }}
+                            </div>
+                            <div class="col-3 text-center">
+                                Total: <br>
+                                ${{ order.total_cost_usd }}
+                            </div>
+                            <div class="col-3 text-center">
+                                Chosen Crypto: <br>
+                                {% if order.order_payment_type == 1 %}
+                                    Bitcoin (BTC)
+                                {% elif order.order_payment_type == 2 %}
+                                    Bitcoin Cash(BCH)
+                                {% elif order.order_payment_type == 3 %}
+                                    Monero (XMR)
+                                {% else %}
 
-                            {% endif %}
+                                {% endif %}
+                            </div>
                         </div>
-                    </div>
                     {% endif %}
                 </div>
 
-                <div class="col-12 text-center mt-5 h4">
+                <div class="col-12 text-center mt-5 h3">
+                    Order Code:
+                </div>
+                <div class="col-12 text-center">{{ order.order_code }}</div>
+
+
+
+                <div class="col-12 text-center mt-5 h3">
                     Pay for Order
                 </div>
 
@@ -48,7 +55,7 @@
                     <br>
                     Any other amount will be ignored so ensure the Fees are properly calculated.
                 </div>
-                <h5>
+                <h5 class="text-center mt-5 mb-5 text-dark">
                     {{ the_price_in_crypto }}
                     {% if order.order_payment_type == 1 %}
                         Bitcoin (BTC)
@@ -60,14 +67,59 @@
 
                     {% endif %}
                 </h5>
-                <div class="col-12 text-center mb-5">
+                <div class="col-12 h3 text-center mt-2 mb-3">
                     Status of Order
                 </div>
-                {% if order.status == 0 %}
-                    <h5 class="text-primary">Waiting on payment</h5>
+                <div class="col-12">
+
+                    {% if order.status == 0 %}
+                        <div class="text-primary h5 text-center">
+                            Waiting on payment option.
+                        </div>
+                    {% elif order.status == 1 %}
+                        <div class="text-success h5 text-center">
+                            Waiting on payment...
+                        </div>
+                        <br>
+                        <p class="text-center">
+                            This could take some time depending on fees and blockchain network.
+                        </p>
+                    {% elif order.status == 2 %}
+                        <div class="text-success h5 text-center">Order has been Paid.  Thank you!</div>
+                    {% else %}
+                    {% endif %}
+
+                </div>
+                {% if order.status == 1 %}
+                    <div class="col-12 text-center">
+                        <h5 class="text-danger ">Please Note</h5>
+                        <br>
+                        This website does no use any javascript or invasive code.  You need to refesh
+                        manually every few minutes
+                        for an update.  If you lose the page.  You can enter your order code
+                        <b>{{ order.order_code }} </b>  to be brought back to this page.
+                    </div>
                 {% elif order.status == 1 %}
-                    <h5 class="text-success">Order has been Paid.  Thank you!</h5>
+                    <div class="col-12 text-center">
+                        <h5 class="text-danger ">Please Note</h5>
+                        <br>
+                        This website does no use any javascript or invasive code.  You need to refesh
+                        manually every few minutes
+                        for an update.  If you lose the page.  You can enter your order code
+                        <b>{{ order.order_code }} </b>  to be brought back to this page.
+                    </div>
+                {% elif order.status == 5 %}
+
+                    <div class="col-12 text-center">
+                        <h5 class="text-danger ">Here are your tracking labels</h5>
+                        <br>
+                     <a href="{{ get_shipping_labels.label_url }}">
+                         {{ get_shipping_labels.label_url }}
+                     </a>
+
+                    </div>
                 {% else %}
+
                 {% endif %}
 
             </div>

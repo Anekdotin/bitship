@@ -1,7 +1,6 @@
 <form method="post"
       action="{{ url_for('index') }}" >
     {{ package_basics.csrf_token }}
-
     <div class="row first_color mb-2">
         <div class="col-12 text-center p-3">
             <div class="col-12 text-center h5">
@@ -16,4 +15,6 @@
         </div>
         {% include 'index_usps/create/_address_form.html' %}
     </div>
+
+
 </form>

@@ -1,4 +1,36 @@
 {% extends "layout_main.html" %}
 {% block content %}
 
+    <div class="row ">
+
+        <div class="col-6 offset-3">
+            <p>Here you can recover an order if you lost the page.
+                Please enter the order number below.</p>
+        </div>
+
+        <div class="col-6 offset-3">
+            <div class="col-12">
+                <form method="post"
+                      class="row g-3 mt-3 mb-3"
+                      action="{{ url_for('lost_order_page') }}">
+                         {{ form.csrf_token }}
+                    <div class="col-6">Order Number</div>
+                    <div class="col-6">
+
+                        <input type="text"
+                               class="form-control"
+                               name="order_id"
+                               id="1a">
+
+                    </div>
+                    <div class="col-12 text-center">
+                        <button type="submit" class="btn btn-primary mb-3">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
 {% endblock %}

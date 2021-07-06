@@ -14,7 +14,7 @@ class PackageFormUSPS(FlaskForm):
     metric_or_imperial_form = StringField(validators=[DataRequired()])
 
     shipping_type = SelectField(u'Select Shipping', choices=[
-        ('1', 'Custom Package'),
+        ('1', 'Select a flate Rate Package'),
         ('7', 'letter'),
         ('8', 'Flat Rate Envolope Letter'),
         ('9', 'Flat Rate Envolope Legal'),
@@ -118,4 +118,8 @@ class SelectShippingChoiceForm(FlaskForm):
 
 
 class TrackingForm(FlaskForm):
+    submit = SubmitField('')
+
+
+class LostOrderForm(FlaskForm):
     submit = SubmitField('')

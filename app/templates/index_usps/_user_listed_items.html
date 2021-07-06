@@ -1,13 +1,15 @@
 <!-- Submit Post -->
-<div class="row first_color mt-3 mb-3">
+<div class="row  mt-3 mb-3 first_color p-3">
     <div class="col-12  text-center ">
         My Cart
     </div>
-    {#                    <div class="col-12  text-center ">Total Cost: {{  }}</div>#}
-    {#                    <div class="col-12  text-center ">Total Packages: {{  }}</div>#}
-    <div class="col-12  text-center ">
+    <div class="col-12  text-center ">Total Packages: {{ total_number_items }}</div>
+    <div class="col-12  text-center ">Total Cost: {{ total_cost_shipping }}</div>
+
+    <div class="col-12  text-center mb-5 mt-5">
         {% for f in get_user_listed_items %}
-            <div class="row border m-2">
+
+            <div class="row m-2 border-bottom">
 
                 <div class="col-3">
                     From {{ f.from_name }} to {{ f.to_name }}
@@ -25,7 +27,30 @@
                         X
                     </a>
                 </div>
+                {% if f.address_status != 'True' %}
+                    <div class="col-12 ">
+                        Address Status:  <div class="text-danger"> Bad: </div>   {{ f.address_message }}
+                    </div>
+                {% else %}
+                    <div class="col-12 ">
+                        Address Status:  <div class="text-success"> OK</div>
+                    </div>
+                {% endif %}
             </div>
         {% endfor %}
     </div>
+
+    {% if get_user_order %}
+
+        {% if get_user_listed_items %}
+            <div class=" text-center ">
+                <a class="btn btn-warning" type="button" href="{{ url_for('second_page') }}">
+                    Checkout
+                </a>
+            </div>
+            <div class=" text-center ">
+                Or add more items
+            </div>
+        {% endif %}
+    {% endif %}
 </div>
